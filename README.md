@@ -28,7 +28,7 @@ The given code is a simple implementation of the Knuth-Morris-Pratt (KMP) algori
 
 # Complexity
 - Time complexity : $O(N + M)$
-$$n$$ : length of given array
+
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
 - Space complexity : $O(M)$
