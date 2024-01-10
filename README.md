@@ -21,7 +21,8 @@ The problem asks for the length of the longest subarray with a sum divisible by 
 
 # Complexity
 - Time complexity : $O(N)$
-N$ : length of given array
+- 
+$N$ : length of given array
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
 - Space complexity : $O(N)$
