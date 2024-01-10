@@ -6,7 +6,6 @@
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
 The problem asks for the length of the longest subarray with a sum divisible by K. The cumulative sum approach and the use of a HashMap can be applied to efficiently solve this problem.
-# Key Ideas:
 
 # Approach:
 
@@ -22,7 +21,7 @@ The problem asks for the length of the longest subarray with a sum divisible by 
 
 # Complexity
 - Time complexity : $O(N)$
-$$n$$ : length of given array
+N$ : length of given array
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
 - Space complexity : $O(N)$
