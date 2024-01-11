@@ -21,7 +21,8 @@ This approach ensures that the resulting number is minimized by considering smal
 
 # Complexity
 - Time complexity : $O(N)$
-$$n$$ : length of given array
+
+$n$ : length of given array
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
 - Space complexity : $O(N)$
