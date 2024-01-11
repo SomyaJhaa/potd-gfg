@@ -1,28 +1,27 @@
 #  Problem Of The Day Solutions GeeksForGeeks
 
-## Today's 10-01-24 
-## [Longest subarray with sum divisible by K](https://www.geeksforgeeks.org/problems/longest-subarray-with-sum-divisible-by-k)
+## Today's 11-01-24 
+## [Remove K Digits](https://www.geeksforgeeks.org/problems/remove-k-digits/1)
 
-# Intuition
-<!-- Describe your first thoughts on how to solve this problem. -->
-The problem asks for the length of the longest subarray with a sum divisible by K. The cumulative sum approach and the use of a HashMap can be applied to efficiently solve this problem.
+**Intuition:**
+The goal of the problem is to remove K digits from the given string to minimize the resulting number. To achieve this, the code uses a greedy approach. The idea is to maintain a stack of digits while iterating through the string. At each step, if the current digit is smaller than the digit at the top of the stack and there are still remaining removals (K > 0), the top of the stack is popped. This is done to ensure that the resulting number is as small as possible. After processing the entire string, any remaining removals are handled by popping elements from the stack.
 
-# Approach:
+Finally, the code constructs the result string by iterating over the elements of the stack (or a vector created from the stack) in reverse order.
 
-- Initialize a variable longest to store the length of the longest subarray.
-- Use a HashMap (unordered_map in C++) to store the remainder and its corresponding index while iterating through the array.
-- Initialize a variable add to store the cumulative sum.
-- Iterate through the array, and for each element, update the cumulative sum (add).
-- Calculate the remainder after dividing the cumulative sum by K.
-- If the remainder is 0, update the longest to the current index (i + 1).
-- If the remainder is already present in the HashMap, update the longest to the difference between the current index (i) and the index stored in the HashMap for that remainder.
-- If the remainder is not present, add it to the HashMap along with its index.
-- After the iteration, return the longest as the result.
+**Approach:**
+1. Initialize a stack (`s`) to store digits and iterate through each character in the input string `S`.
+2. For each character, while the stack is not empty, the current character is smaller than the top of the stack, and there are remaining removals (K > 0), pop elements from the stack and decrement K.
+3. Push the current character onto the stack.
+4. After processing the entire string, if there are remaining removals, pop elements from the stack.
+5. Create a vector (`vec`) to store the elements of the stack in reverse order.
+6. Iterate over the vector (`vec`) in reverse order and construct the result string (`min`), ignoring leading zeros.
+7. If the resulting number is empty, return "0"; otherwise, return the resulting number.
+
+This approach ensures that the resulting number is minimized by considering smaller digits earlier in the process and handling removals greedily. The stack is used to keep track of the selected digits, and the final result is constructed by iterating over the reversed stack elements.
 
 # Complexity
 - Time complexity : $O(N)$
-
- $N$ : length of given array
+$$n$$ : length of given array
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
 - Space complexity : $O(N)$
@@ -30,43 +29,42 @@ The problem asks for the length of the longest subarray with a sum divisible by 
 
 # Code
 ```
-class Solution{
-public:	
-	int longSubarrWthSumDivByK(int arr[], int n, int k)
-	{
-	    // Initialized the variable to store the length of the longest subarray
-        int longest = 0;
+#include <iostream>
+#include <stack>
+#include <string>
+class Solution {
+  public:
+    string removeKdigits(string S, int K) {
+        if(S.size() <= K) return "0";
         
-        // HashMap to store the remainder and its corresponding index
-        unordered_map<int, int> m;
-        
-        // Variable to store the cumulative sum
-        int add = 0;
-
-        // Iterated through the array
-        for (int i = 0; i < n; i++) {
-            // Update the cumulative sum
-            add += arr[i];
-            
-            // Calculated the remainder after dividing the cumulative sum by k
-            int remainder = ((add % k) + k) % k;
-            
-            // Checked if the cumulative sum is divisible by k
-            if (remainder == 0) {
-                // Updated the length of the longest subarray
-                longest = i + 1;
-            } else if (m.count(remainder) > 0) {
-                // If the remainder is already present in the HashMap, updated the longest subarray length
-                longest = max(longest, i - m[remainder]);
-            } else {
-                // If the remainder is not present, added it to the HashMap along with its index
-                m[remainder] = i ;
+        stack<char> s;
+        for(int i=0; i< S.size(); i++) {
+            while(!s.empty() && s.top() > S[i] && K>0) {
+                s.pop();
+                K--;
             }
+            s.push(S[i]);
+        }
+        while(K-- > 0) s.pop();
+        
+        vector<char> vec;
+        while (!s.empty()) {
+            vec.push_back(s.top());
+            s.pop();
+        }
+       string min;
+       // Iterate over the vector to construct the result string
+        for (auto it = vec.rbegin(); it != vec.rend(); ++it) {
+            if (*it == '0' && min.empty()) {
+                continue;
+            }
+            min.push_back(*it);
         }
 
-        // Returned the length of the longest subarray
-        return longest;
-	}
+        // If the resulting number is empty, return "0"
+        return min.empty() ? "0" : min;
+
+    }
 };
 
 ```
