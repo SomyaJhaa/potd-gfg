@@ -1,53 +1,106 @@
 #  Problem Of The Day Solutions GeeksForGeeks
 
 ## Today's 18-01-24 
-## [Water the plants](https://www.geeksforgeeks.org/problems/water-the-plants--170646/1)
+## [Top k numbers in a stream](https://www.geeksforgeeks.org/problems/top-k-numbers3425/1)
 
-## Intuition
-To water the entire gallery efficiently, we can simulate the process of attaching sprinklers. We can iterate through each division of the gallery and determine the effective range of each sprinkler. We can then store this information in an array, `range`, where `range[i]` represents the rightmost point that can be watered by the sprinkler at position `i`. After computing the effective range for each sprinkler, we can iterate through the gallery again and determine the minimum number of sprinklers needed to cover the entire gallery.
+### Intuition
+My code aims to find the top K elements based on their frequency at each iteration while traversing an input array. I used a combination of an array (`jada`) and a HashMap (`m`) to efficiently keep track of the current top K elements and their frequencies.
 
-## Approach
-1. Initialize an array `range` with all elements set to -1.
-2. Iterate through each division of the gallery and compute the effective range of each sprinkler. Update the `range` array accordingly.
-3. Initialize variables `count` and `last` to 0 and -1, respectively.
-4. Iterate through the `range` array:
-   - If `range[i]` is -1, return -1, as there is no sprinkler covering position `i`.
-   - If `i` is greater than `last`, increment `count` and update `last` with `range[i]`.
-5. Return the final value of `count`, representing the minimum number of sprinklers needed.
+### Approach
 
-## Complexity Analysis
-The time complexity of this approach is O(n log n) due to the iteration through the gallery, and the space complexity is O(n) for the `range` array.
+- Initialized an array (`jada`) with an extra slot to hold the current element at the last position. Also, created a HashMap (`m`) to store the frequency of each element.
+- Iterated over the input array, updating the last slot of `jada` with the current element and updating its frequency in the HashMap (`m`).
+- Found the position of the current element in `jada` and moved it to its correct position based on its frequency. This ensured that `jada` maintains the top K elements at all times.
+- Populated a new array with the current top K elements and add it to the result array.
+- Repeated the last three steps steps for each element in the input array.
+- The final result array contained sub-arrays representing the top K elements at each iteration.
 
-# Code
+---
+Have a look at the code , still have any confusion then please let me know in the comments
+Keep Solving.:)
+
+## Complexity
+- Time complexity : $O(N*K)$
+<!-- Add your time complexity here, e.g. $$O())$$ -->
+$N$ : length of the input array
+
+$K$ : given
+- Space complexity : $O(K)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
+
+## Code
 ```
-class Solution{
-    public:
-    int min_sprinklers(int gallery[], int n)
-    {
-      vector<int> range(n, -1);
+import java.util.*;
 
-        for(int i = 0; i < n ; ++i){
-            int l = max(0, i - gallery[i]);
-            int r = min(n - 1, i + gallery[i]);
-            for(int j = l; j <= r; ++j){
-                range[j] = max(range[j], r);
-            }
+class Solution {
+    
+    // Function to determine the top K elements based on frequency at each iteration
+    
+    public static ArrayList<ArrayList<Integer>> kTop(int[] arr, int N, int K) {
+        // Resultant array of arrays to store the top K elements at each iteration
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+
+        // Array to maintain the current top K elements along with an extra slot
+        int[] jada = new int[K + 1];
+
+        // HashMap to store the frequency of each element
+        HashMap<Integer, Integer> m = new HashMap<>();
+
+        // Initializing the frequency map with zeros for each element from 0 to K
+        for (int i = 0; i <= K; i++) {
+            m.put(i, 0);
         }
-        
-        int count = 0, last = -1;
 
-        for (int i = 0; i < n; ++i) {
-            if (range[i] == -1) {
-                return -1;
+        // Iterating over the input array
+        for (int i = 0; i < arr.length; i++) {
+            // Update the last slot of jada with the current element
+            jada[K] = arr[i];
+
+            // Updating the frequency map for the current element
+            if (m.containsKey(arr[i])) {
+                m.put(arr[i], m.get(arr[i]) + 1);
+            } else {
+                m.put(arr[i], 1);
             }
 
-            if (i > last) {
-                ++count;
-                last = range[i];
+            // Finding the position of the current element in jada
+            int in = -1;
+            for (int j = 0; j < jada.length; j++) {
+                if (jada[j] == arr[i]) {
+                    in = j;
+                    break;
+                }
             }
+            in--;
+
+            // Moving the current element to its correct position in jada based on frequency
+            while (in >= 0) {
+                if (m.get(jada[in]) < m.get(jada[in + 1])) {
+                    int t = jada[in];
+                    jada[in] = jada[in + 1];
+                    jada[in + 1] = t;
+                } else if ((jada[in] > jada[in + 1]) && (m.get(jada[in]) == m.get(jada[in + 1]))) {
+                    int t = jada[in];
+                    jada[in] = jada[in + 1];
+                    jada[in + 1] = t;
+                } else {
+                    break;
+                }
+                in--;
+            }
+
+            // Populating the current array with the top K elements and add it to the result
+            ArrayList<Integer> aa = new ArrayList<>();
+            for (int e = 0; e < K && jada[e] != 0; e++) {
+                aa.add(jada[e]);
+            }
+            result.add(aa);
         }
-        return count;
-  // code here
+
+        // Returning the final result
+        return result;
     }
-};
+}
+
 ```
+
