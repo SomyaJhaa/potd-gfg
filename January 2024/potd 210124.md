@@ -48,7 +48,97 @@ $n$ : number of nodese
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 $max = MAX NODES$ : 30 ( I used )
 
-## Code
+## Code C++
+```
+// User function Template for C++
+
+#define MAXN 25
+
+class Solution{
+public:
+    // Adjacency matrix for the graph
+    bool adjacencyMatrix[MAXN][MAXN];
+    
+    int vertexCover(int n, std::vector<std::pair<int, int>> &edges) {
+        // Initialize the adjacency matrix
+        memset(adjacencyMatrix, 0, sizeof adjacencyMatrix);
+
+        // Add edges to the graph
+        for (auto edge : edges) {
+            addEdge(edge.first, edge.second);
+        }
+
+        // Find the minimum size of a vertex cover
+        return findMinCoverSize(n, edges.size());
+    }
+
+    // Function to check if a vertex cover of size k exists
+    bool isVertexCover(int numVertices, int k, int numEdges) {
+        int setBits = (1 << k) - 1;
+        int upperBound = (1 << numVertices);
+        bool visited[MAXN][MAXN];
+
+        while (setBits < upperBound) {
+            // Initialize visited array
+            memset(visited, 0, sizeof visited);
+            int edgeCount = 0;
+
+            // Iterate over vertices and check if they are part of the current vertex cover
+            for (int vertexBit = 1, vertex = 1; vertexBit < upperBound; vertexBit = vertexBit << 1, vertex++) {
+                if (setBits & vertexBit) {
+                    // Check neighbors of the current vertex
+                    for (int neighbor = 1; neighbor <= numVertices; neighbor++) {
+                        if (adjacencyMatrix[vertex][neighbor] && !visited[vertex][neighbor]) {
+                            visited[vertex][neighbor] = 1;
+                            visited[neighbor][vertex] = 1;
+                            edgeCount++;
+                        }
+                    }
+                }
+            }
+
+            // If the edge count matches the total number of edges, a valid cover is found
+            if (edgeCount == numEdges)
+                return true;
+
+            // Update the set of selected vertices using bitwise operations
+            int rightmostSetBit = setBits & -setBits;
+            int newSet = setBits + rightmostSetBit;
+            setBits = (((newSet ^ setBits) >> 2) / rightmostSetBit) | newSet;
+        }
+
+        // No valid vertex cover of size k found
+        return false;
+    }
+
+    // Function to find the minimum size of a vertex cover using binary search
+    int findMinCoverSize(int numVertices, int numEdges) {
+        int left = 1, right = numVertices;
+
+        while (right > left) {
+            int mid = (left + right) >> 1;
+
+            // Check if a vertex cover of size mid exists
+            if (isVertexCover(numVertices, mid, numEdges) == false)
+                left = mid + 1;
+            else
+                right = mid;
+        }
+
+        // Return the minimum size of a vertex cover
+        return left;
+    }
+
+    // Function to add an undirected edge to the graph
+    void addEdge(int u, int v) {
+        adjacencyMatrix[u][v] = 1;
+        adjacencyMatrix[v][u] = 1;
+    }
+    
+};
+```
+
+## Code Java
 ```
 //User function Template for Java
 
