@@ -1,6 +1,4 @@
-# Problem Of The Day Solutions
-
-This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
+#  Problem Of The Day Solutions GeeksForGeeks
 
 ## Today's 26-01-24 
 ## [Fractional Knapsack](https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1)
