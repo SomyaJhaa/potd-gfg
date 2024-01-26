@@ -2,17 +2,8 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 26-01-24 [Problem Link](https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1)
-## Fractional Knapsack
-
-
-
-## Problem Of The Day Solutions
-
-This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
-
-## Today's 26-01-24 [Problem Link](https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1)
-## Fractional Knapsack
+## Today's 26-01-24 
+## [Fractional Knapsack](https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1)
 
 ## Intuition
 
