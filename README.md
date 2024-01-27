@@ -1,9 +1,7 @@
-## Problem Of The Day Solutions
+#  Problem Of The Day Solutions GeeksForGeeks
 
-This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
-
-## Today's 27-01-24 [Problem Link](https://www.geeksforgeeks.org/problems/brackets-in-matrix-chain-multiplication1024/1)
-## Brackets in Matrix Chain Multiplication
+## Today's 27-01-24 
+## [Brackets in Matrix Chain Multiplication](https://www.geeksforgeeks.org/problems/brackets-in-matrix-chain-multiplication1024/1) 
 
 ## Intuition
 
