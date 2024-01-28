@@ -1,123 +1,115 @@
 #  Problem Of The Day Solutions GeeksForGeeks
 
-## Today's 27-01-24 
-## [Brackets in Matrix Chain Multiplication](https://www.geeksforgeeks.org/problems/brackets-in-matrix-chain-multiplication1024/1) 
+## Today's 28-01-24 
+## [Geekina Hate 1s](https://www.geeksforgeeks.org/problems/geekina-hate-1s/1)
 
 ## Intuition
 
-This problem involves finding the optimal order of multiplying a given set of matrices to minimize the total number of scalar multiplications.
+The goal is to find the nth number with exactly k set bits in its binary representation. The search space for this problem spans a range from 0 to 10^15.
 
 
 ## Approach
 
-**Dynamic Programming Table Initialization :**
-   - Initialized a 2D array `gp` to store the minimum cost of multiplying matrices.
-   - Set `gp[i][i]` to 0 for all `i`, as a single matrix multiplication has no cost.
+### Binary Search
+**Initial Bounds :** 
+    Set the initial lower and upper bounds for binary search to 0 and 10^15, respectively.
 
-**Dynamic Programming Table Filling :**
-   - Used a bottom-up approach to fill the `gp` table.
-   - For each subsequence length `len` (2 to n-1), iterated through all possible subsequences (i, j) of that length.
-   - For each subsequence, found the optimal split point `k` that minimizes the cost of multiplication.
-   - Updated the `gp[i][j]` with the minimum cost and store the optimal split point in the `order` array.
+**Binary Search Loop :** 
+    While the lower bound is less than the upper bound, calculated the midpoint and use it to determine the total set bits up to that position.
 
-**Optimal Order Reconstruction :**
-   - After filling the `gp` table, reconstructed the optimal order of matrix multiplication.
-   - Used a recursive function `appendOptimalOrder` to traverse the `order` array and build the result string.
+**Adjust Bounds :** 
+    Based on the total set bits, adjusted the bounds to narrow down the search space.
 
-**Result :**
-   - The result string contained the optimal order of matrix multiplication, including parentheses to represent the optimal split points.
+**Result :** 
+    The final lower bound represents the nth number with k set bits.
+
+### Total Set Bits Calculation
+
+**Calculated Total Set Bits :** 
+    For a given number and a specified maximum set bits count, calculated the total count of set bits up to that position.
+
+**Iterated Over Set Bits Count :** 
+    Iterated over set bits count from 0 to the specified maximum and sum up the set bits count at each position.
+
+### Counted Set Bits
+
+**Base Cases :** Handle base cases where set bits count is 0 or the number is 0.
+
+**Highest Bit Position :**  Determined the position of the highest set bit in the binary representation.
+
+**Check Validity :** Checked if there are enough bits to form the required set bits.
+
+**Recursive Calculation :** Calculate the binomial coefficient and continue recursively by flipping the highest set bit.
+
+### Binomial Coefficient
+
+**Calculated Binomial Coefficient:** Calculated the binomial coefficient (n choose r) using the factorial function.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(n^3)$
+- Time complexity : $O(k * log(10^{15})$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$n$ : number of matrices
+$k$ : maximum set bits count
 
-- Space complexity : $O(n^2)$
+- Space complexity : $O(k)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code 
 ```
-//User function Template for Java
+from typing import List
+from math import factorial, log2
 
-class Solution {
-    // Static variable to store the optimal order
-    static char[][] order;
-
-    // Main function to find the optimal matrix chain multiplication order
-    static String matrixChainOrder(int p[], int n) {
+class Solution:
+    def findNthNumber(self, n: int, k: int) -> int:
+        # Set the initial lower and upper bounds for binary search
+        lower_limit, upper_limit = 0, 10**15
         
-        // Initializing the dynamic programming table
-        int[][] gp = initializeDPTable(n);
+        # Performing binary search to find the nth number with k set bits
+        result = self.binary_search(lower_limit, upper_limit, n, k)
         
-        // Initializing the order array to store the optimal split points
-        order = new char[n][26]; 
+        # Returning the result
+        return result
 
-        // Filling the dynamic programming table and order array
-        fillDPTable(gp, p, n);
+    def binary_search(self, lower_limit, upper_limit, n, k):
+        # Binary search loop
+        while lower_limit < upper_limit:
+            mid_point = lower_limit + (upper_limit - lower_limit) // 2
+            total_set_bits = self.calculate_total_set_bits(mid_point, k)
+
+            # Adjusting bounds based on the total set bits
+            if total_set_bits >= n:
+                upper_limit = mid_point
+            else:
+                lower_limit = mid_point + 1
+
+        # Returning the final result
+        return lower_limit
+
+    def calculate_total_set_bits(self, number, max_set_bits_count):
+        # Calculating the total count of set bits up to a specified position
+        return sum(self.count_set_bits(number, i) for i in range(max_set_bits_count + 1))
+
+    def count_set_bits(self, number, set_bits_count):
+        # Recursive function to count set bits in a binary representation
+        if set_bits_count == 0:
+            return 1
+        if number == 0:
+            return 0
+
+        highest_bit_position = int(log2(number))
         
-        // Reconstructing the optimal order
-        reconstructOptimalOrder(gp, order, p, n);
+        # Checking if there are enough bits to form the required set bits
+        if highest_bit_position < set_bits_count - 1:
+            return 0
 
-        // Building the result string from the optimal order
-        StringBuilder result = new StringBuilder();
-        appendOptimalOrder(order, result, 1, n - 1);
-        return result.toString();
-    }
+        # Calculating binomial coefficient and continue recursively
+        return self.binomial_coefficient(highest_bit_position, set_bits_count) + self.count_set_bits(number ^ (1 << highest_bit_position), set_bits_count - 1)
 
-    // Helper function to initialize the dynamic programming table
-    static int[][] initializeDPTable(int n) {
-        int[][] gp = new int[n][n];
-        for (int i = 1; i < n; i++) {
-            gp[i][i] = 0;
-        }
-        return gp;
-    }
-
-    // Helper function to fill the dynamic programming table and order array
-    static void fillDPTable(int[][] gp, int[] dimensions, int n) {
-        for (int len = 2; len < n; len++) {
-            for (int i = 1; i < n - len + 1; i++) {
-                int j = i + len - 1;
-                gp[i][j] = Integer.MAX_VALUE;
-
-                for (int k = i; k < j; k++) {
-                    // Calculating the cost of multiplication
-                    int cost = gp[i][k] + gp[k + 1][j] + dimensions[i - 1] * dimensions[k] * dimensions[j];
-
-                    // Updating the dynamic programming table and order array if cost is smaller
-                    if (cost < gp[i][j]) {
-                        gp[i][j] = cost;
-                        order[i][j] = (char) ('A' + k - 1); // Storing the optimal split point
-                    }
-                }
-            }
-        }
-    }
-
-    // Helper function to reconstruct the optimal order
-    static void reconstructOptimalOrder(int[][] gp, char[][] order, int[] dimensions, int n) {
-        for (int i = 1; i < n; i++) {
-            for (int j = i; j < n; j++) {
-                gp[i][j] = Integer.MAX_VALUE;
-            }
-        }
-    }
-
-    // Helper function to append the optimal order to the result string
-    static void appendOptimalOrder(char[][] order, StringBuilder result, int i, int j) {
-        if (i == j) {
-            result.append((char) ('A' + i - 1));
-            return;
-        }
-        result.append('(');
-        appendOptimalOrder(order, result, i, order[i][j] - 'A' + 1);
-        appendOptimalOrder(order, result, order[i][j] - 'A' + 2, j);
-        result.append(')');
-    }
-}
+    def binomial_coefficient(self, n, r):
+        # Calculating binomial coefficient (n choose r)
+        return factorial(n) // (factorial(r) * factorial(n - r)) if n >= r else 0
 ```
 
