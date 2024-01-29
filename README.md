@@ -1,115 +1,110 @@
 #  Problem Of The Day Solutions GeeksForGeeks
 
-## Today's 28-01-24 
-## [Geekina Hate 1s](https://www.geeksforgeeks.org/problems/geekina-hate-1s/1)
+## Today's 30-01-24 
+## [LCS of three strings](https://www.geeksforgeeks.org/problems/lcs-of-three-strings0028/1)
 
 ## Intuition
 
-The goal is to find the nth number with exactly k set bits in its binary representation. The search space for this problem spans a range from 0 to 10^15.
+The task is to find the length of the Longest Common Subsequence (LCS) of three strings: A, B, and C. The LCS is a subsequence that is common to all three strings and is not necessarily contiguous.
 
+This problem can be efficiently solved using dynamic programming. My idea is to break down the problem into smaller subproblems and use memoization to avoid redundant computations.
 
 ## Approach
 
-### Binary Search
-**Initial Bounds :** 
-    Set the initial lower and upper bounds for binary search to 0 and 10^15, respectively.
+**Defined the Variables :**
+   - Declared three static String variables `a`, `b`, and `c` to store the input strings.
+   - Created a 3D array `gp` to store the results of subproblems. `gp[i][j][k]` will represent the length of LCS of substrings A[0...i], B[0...j], and C[0...k].
 
-**Binary Search Loop :** 
-    While the lower bound is less than the upper bound, calculated the midpoint and use it to determine the total set bits up to that position.
+**Initialized the Array :**
+   - Initialized the `gp` array with -1 to indicate that the result for a particular subproblem has not been computed yet.
 
-**Adjust Bounds :** 
-    Based on the total set bits, adjusted the bounds to narrow down the search space.
+**Recursive Helper Function :**
+   - Implemented a recursive helper function `helper(i, j, k)` that computes the length of the LCS for substrings A[0...i], B[0...j], and C[0...k].
+   - Base case: If any of the strings becomes empty (`i == -1`, `j == -1`, or `k == -1`), return 0.
+   - If the result for the current subproblem is already computed, returned it.
+   - If the characters at the current positions in all three strings are equal, incremented the result and move to the previous positions in all three strings.
+   - If the characters are not equal, found the maximum length by considering all possibilities :
+     - `helper(i - 1, j, k)`
+     - `helper(i, j - 1, k)`
+     - `helper(i, j, k - 1)`
 
-**Result :** 
-    The final lower bound represents the nth number with k set bits.
+**Main Function:**
+   - In the main function `LCSof3`, assigned the input strings to the static variables.
+   - Called the helper function with the lengths of the input strings as arguments.
 
-### Total Set Bits Calculation
+**Returned the Result:**
+   - The result of the main function is the length of the LCS of the three input strings.
 
-**Calculated Total Set Bits :** 
-    For a given number and a specified maximum set bits count, calculated the total count of set bits up to that position.
-
-**Iterated Over Set Bits Count :** 
-    Iterated over set bits count from 0 to the specified maximum and sum up the set bits count at each position.
-
-### Counted Set Bits
-
-**Base Cases :** Handle base cases where set bits count is 0 or the number is 0.
-
-**Highest Bit Position :**  Determined the position of the highest set bit in the binary representation.
-
-**Check Validity :** Checked if there are enough bits to form the required set bits.
-
-**Recursive Calculation :** Calculate the binomial coefficient and continue recursively by flipping the highest set bit.
-
-### Binomial Coefficient
-
-**Calculated Binomial Coefficient:** Calculated the binomial coefficient (n choose r) using the factorial function.
+My dynamic programming approach helps optimize the solution by avoiding redundant computations and efficiently finding the length of the Longest Common Subsequence of three strings.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(k * log(10^{15})$
+- Time complexity : $O(n1 * n2 * n3)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$k$ : maximum set bits count
+n1, n2, and n3 are the lengths of the input strings.
 
-- Space complexity : $O(k)$
+- Space complexity : $O(n1 * n2 * n3)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code 
 ```
-from typing import List
-from math import factorial, log2
+class Solution {
+public:
+    static string a;
+    static string b;
+    static string c;
+    static int gp[26][26][26];
 
-class Solution:
-    def findNthNumber(self, n: int, k: int) -> int:
-        # Set the initial lower and upper bounds for binary search
-        lower_limit, upper_limit = 0, 10**15
-        
-        # Performing binary search to find the nth number with k set bits
-        result = self.binary_search(lower_limit, upper_limit, n, k)
-        
-        # Returning the result
-        return result
+    // Helper function to compute the length of the Longest Common Subsequence
+    static int helper(int i, int j, int k);
 
-    def binary_search(self, lower_limit, upper_limit, n, k):
-        # Binary search loop
-        while lower_limit < upper_limit:
-            mid_point = lower_limit + (upper_limit - lower_limit) // 2
-            total_set_bits = self.calculate_total_set_bits(mid_point, k)
+    // Function to find the length of the Longest Common Subsequence of three strings
+    int LCSof3(string A, string B, string C, int n1, int n2, int n3);
+};
 
-            # Adjusting bounds based on the total set bits
-            if total_set_bits >= n:
-                upper_limit = mid_point
-            else:
-                lower_limit = mid_point + 1
+// Initializing static variables
+string Solution::a;
+string Solution::b;
+string Solution::c;
+int Solution::gp[26][26][26];
 
-        # Returning the final result
-        return lower_limit
+// Helper function definition
+int Solution::helper(int i, int j, int k) {
+    // Base case: if any of the strings is empty, return 0
+    if (i == -1 || j == -1 || k == -1) {
+        return 0;
+    }
 
-    def calculate_total_set_bits(self, number, max_set_bits_count):
-        # Calculating the total count of set bits up to a specified position
-        return sum(self.count_set_bits(number, i) for i in range(max_set_bits_count + 1))
+    // If the result for the current subproblem is already computed, returning it
+    if (gp[i][j][k] != -1) {
+        return gp[i][j][k];
+    }
 
-    def count_set_bits(self, number, set_bits_count):
-        # Recursive function to count set bits in a binary representation
-        if set_bits_count == 0:
-            return 1
-        if number == 0:
-            return 0
+    // If the characters at the current positions in all three strings are equal
+    if (a[i] == b[j] && b[j] == c[k]) {
+        // Incrementing the result and move to the previous positions in all three strings
+        return gp[i][j][k] = 1 + helper(i - 1, j - 1, k - 1);
+    } else {
+        // If the characters are not equal, finding the maximum length by considering all possibilities
+        return gp[i][j][k] = max(max(helper(i - 1, j, k), helper(i, j - 1, k)), helper(i, j, k - 1));
+    }
+}
 
-        highest_bit_position = int(log2(number))
-        
-        # Checking if there are enough bits to form the required set bits
-        if highest_bit_position < set_bits_count - 1:
-            return 0
+// Function to find the length of the Longest Common Subsequence of three strings
+int Solution::LCSof3(string A, string B, string C, int n1, int n2, int n3) {
+    // Assigning input strings to static variables
+    a = A;
+    b = B;
+    c = C;
 
-        # Calculating binomial coefficient and continue recursively
-        return self.binomial_coefficient(highest_bit_position, set_bits_count) + self.count_set_bits(number ^ (1 << highest_bit_position), set_bits_count - 1)
+    // Initializing the 3D array with -1 to indicate uncalculated values
+    memset(gp, -1, sizeof(gp[0][0][0]) * 26 * 26 * 26);
 
-    def binomial_coefficient(self, n, r):
-        # Calculating binomial coefficient (n choose r)
-        return factorial(n) // (factorial(r) * factorial(n - r)) if n >= r else 0
+    // Calling the helper function to compute the result
+    return helper(n1 - 1, n2 - 1, n3 - 1);
+}
 ```
 
