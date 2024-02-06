@@ -1,4 +1,4 @@
-## GeeksForGeeks Problem Of The Day Solutions
+#  Problem Of The Day Solutions GeeksForGeeks
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
