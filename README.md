@@ -2,27 +2,37 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 07-02-24 
-## [Min distance between two given nodes of a Binary Tree](https://www.geeksforgeeks.org/problems/min-distance-between-two-given-nodes-of-a-binary-tree/1)
+## Today's 08-02-24 
+## [Check if all leaves are at same level](https://www.geeksforgeeks.org/problems/leaf-at-same-level/1)
 
 ## Intuition
 
-The task is to find the distance between two nodes (`a` and `b`) in a binary tree. The distance is defined as the number of edges on the path from one node to the other. To solve this problem efficiently, I employed a Depth-First Search (DFS) approach.
+This problem at hand involves determining whether a binary tree is balanced, where the subtrees of any node do not differ in depth by more than one level. Visually, a balanced tree exhibits an even structure without significant skewness.
 
 ## Approach
 
-**DFS Traversal :**
-   - Utilized a recursive DFS traversal to explore the binary tree.
-   - Kept track of the distance between the current node and the target nodes `a` and `b` in the left and right subtrees.
+To assess the balance of a binary tree, I employed a recursive approach to calculate both the maximum and minimum depths of the tree. My fundamental idea was that, for a tree to be balanced, its maximum and minimum depths should coincide.
 
-**Updated Distance (`jawab`) :**
-   - If the current node is one of the target nodes (`a` or `b`), updated the `jawab` variable based on the distances obtained from the left and right subtrees.
-   - Handled the cases where both target nodes are found, only one target node is found, or neither target node is found.
+##### Base Case :
+   - If the current node is `null`, the depth is considered 0.
+   - For leaf nodes (nodes with no children), the depth is 1.
 
-**Returned the Result :**
-   - The final result is stored in the `jawab` variable, which represents the distance between the two target nodes in the binary tree.
+##### Founded Maximum Depth :
+   - Recursively calculated the maximum depth of the left and right subtrees.
+   - The maximum depth of the current node is the maximum value among the depths of its left and right subtrees, plus 1 for the current level.
 
-My approach ensured an efficient exploration of the binary tree, updating the distance as soon as both target nodes are found. My recursive DFS traversal allowed for a systematic examination of the tree, and the `jawab` variable was updated based on the conditions encountered during traversal.
+##### Founded Minimum Depth :
+   - Recursively calculated the minimum depth of the left and right subtrees.
+   - For leaf nodes, returned 1.
+   - The minimum depth of the current node is the minimum value among the depths of its left and right subtrees, plus 1 for the current level.
+
+##### Checked Balanced Tree :
+   - If the calculated maximum depth is equal to the minimum depth, the tree is considered balanced.
+   - If the depths differ, the tree is not balanced.
+
+##### Conclusion
+
+My approach, through a comparison of maximum and minimum depths, offers a clear method to determine whether a binary tree meets the criteria of balance. The recursive nature of my solution facilitates a comprehensive exploration of the tree structure, enabling efficient depth comparisons.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -33,73 +43,72 @@ Keep Solving.:)
 - Time complexity : $O(N)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
 
-$N$ : number of nodes in the binary tree.
+$N$ : number of nodes in the tree.
 
-- Space complexity : $O(H)$ 
+- Space complexity : $O(N)$ 
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
-$H$ : height of the tree.
 
 ## Code 
 
 ```
+//User function Template for Java
 
-// FUNCTION CODE
 /* A Binary Tree node
 class Node
 {
     int data;
     Node left, right;
-   Node(int item)    {
+
+    Node(int item)
+    {
         data = item;
         left = right = null;
     }
-} */
-
-/* Should return minimum distance between a and b
-   in a tree with given root*/
-class GfG {
-    
-    static int jawab;
-
-    // Function to find the distance between two nodes in a binary tree
-    int findDist(Node root, int a, int b) {
-        // Your code here
-        jawab = 0;
-        helper(root, a, b);
-        return jawab;
-    }
-
-    // Helper function for DFS traversal to find the distance between two nodes
-    static int helper(Node root, int a, int b) {
-        if (root == null) {
-            return 0;
-        }
-
-        // Recursive calls for left and right subtrees
-        int l = helper(root.left, a, b);
-        int r = helper(root.right, a, b);
-
-        // Checking if the current node is one of the target nodes
-        if (root.data == a || root.data == b) {
-            // If one of the target nodes is found, then updating jawab based on left and right distances
-            if (l != 0 || r != 0) {
-                jawab = Math.max(l, r);
-                return 0;
-            } else {
-                // If the current node is a target node with no valid distance found, then returning 1
-                return 1;
-            }
-        } else if (l != 0 && r != 0) {
-            // If both target nodes are found in left and right subtrees, then updating jawab accordingly
-            jawab = l + r;
-            return 0;
-        } else if (l != 0 || r != 0) {
-            // If one target node is found, then returning the maximum distance from either subtree plus 1
-            return Math.max(l, r) + 1;
-        }
-
-        // Default case, returning 0
-        return 0;
-    }
 }
+*/
+
+class Solution {
+
+    // Checking if the tree is balanced
+    boolean check(Node root) {
+        // Finding the maximum and minimum depths
+        int maxDepth = findMaxDepth(root);
+        int minDepth = findMinDepth(root);
+
+        // Returning true if the maximum and minimum depths are equal, indicating a balanced tree
+        return maxDepth == minDepth;
+    }
+
+    // Helper method to find the maximum depth of the tree
+    static int findMaxDepth(Node currentNode) {
+        // Base case: if the current node is null, returniing 0
+        if (currentNode == null)
+            return 0;
+
+        // Recursively finding the maximum depth of the left and right subtrees
+        int leftDepth = findMaxDepth(currentNode.left);
+        int rightDepth = findMaxDepth(currentNode.right);
+
+        // Returning the maximum depth among the left and right subtrees, plus 1 for the current level
+        return 1 + Math.max(leftDepth, rightDepth);
+    }
+
+    // Helper method to find the minimum depth of the tree
+    static int findMinDepth(Node currentNode) {
+        // Base case: if the current node is null, returning the maximum integer value
+        if (currentNode == null)
+            return Integer.MAX_VALUE;
+
+        // Base case: if the current node is a leaf node, returning 1
+        if (currentNode.left == null && currentNode.right == null)
+            return 1;
+
+        // Recursively finding the minimum depth of the left and right subtrees
+        int leftDepth = findMinDepth(currentNode.left);
+        int rightDepth = findMinDepth(currentNode.right);
+
+        // Returning the minimum depth among the left and right subtrees, plus 1 for the current level
+        return 1 + Math.min(leftDepth, rightDepth);
+    }
+}       
 ```
