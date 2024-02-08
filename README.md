@@ -3,8 +3,7 @@
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
 ## Today's 08-02-24 
-## [Check if all leaves are at same level
-](https://www.geeksforgeeks.org/problems/leaf-at-same-level/1)
+## [Check if all leaves are at same level(https://www.geeksforgeeks.org/problems/leaf-at-same-level/1)
 
 **Intuition:**
 To check if all leaf nodes in a binary tree are at the same level, we can perform a level-order traversal using a queue. During the traversal, we keep track of the level of each node. If we encounter a leaf node, we compare its level with the level of the previous leaf nodes. If the levels are consistent, we continue; otherwise, we return false.
