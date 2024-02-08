@@ -2,37 +2,33 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 08-02-24 
-## [Check if all leaves are at same level](https://www.geeksforgeeks.org/problems/leaf-at-same-level/1)
+## Today's 09-02-24 
+## [Check for Children Sum Property in a Binary Tree](https://www.geeksforgeeks.org/problems/children-sum-parent/1)
 
 ## Intuition
 
-This problem at hand involves determining whether a binary tree is balanced, where the subtrees of any node do not differ in depth by more than one level. Visually, a balanced tree exhibits an even structure without significant skewness.
+This problem at hand involved verifying whether every node in a tree adheres to a sum property: having a value equal to the sum of its child nodes. My algorithm employed a level-order traversal to systematically process nodes and validate this sum property across the entire tree.
 
 ## Approach
 
-To assess the balance of a binary tree, I employed a recursive approach to calculate both the maximum and minimum depths of the tree. My fundamental idea was that, for a tree to be balanced, its maximum and minimum depths should coincide.
+**Checked for Empty Tree :**
+- If the tree is empty, it trivially satisfies the sum property.
 
-##### Base Case :
-   - If the current node is `null`, the depth is considered 0.
-   - For leaf nodes (nodes with no children), the depth is 1.
+**Initialized a Queue for Level Order Traversal :**
+- Established a queue tailored for a level-order traversal.
 
-##### Founded Maximum Depth :
-   - Recursively calculated the maximum depth of the left and right subtrees.
-   - The maximum depth of the current node is the maximum value among the depths of its left and right subtrees, plus 1 for the current level.
+**Level Order Traversal :**
+- Employed a while loop until the queue becomes empty.
+- Dequeued the current node and process its children.
 
-##### Founded Minimum Depth :
-   - Recursively calculated the minimum depth of the left and right subtrees.
-   - For leaf nodes, returned 1.
-   - The minimum depth of the current node is the minimum value among the depths of its left and right subtrees, plus 1 for the current level.
+**Calculated Sum and Checked Property :**
+- For each node, calculated the sum of its child nodes and ensured it equals the node's value.
+- Returned false if the sum property is violated.
 
-##### Checked Balanced Tree :
-   - If the calculated maximum depth is equal to the minimum depth, the tree is considered balanced.
-   - If the depths differ, the tree is not balanced.
+**Returned the Result :**
+- If the entire tree satisfied the sum property, returned true.
 
-##### Conclusion
-
-My approach, through a comparison of maximum and minimum depths, offers a clear method to determine whether a binary tree meets the criteria of balance. The recursive nature of my solution facilitates a comprehensive exploration of the tree structure, enabling efficient depth comparisons.
+My algorithm systematically verified the sum property for each node in a tree using a level-order traversal, ensuring the property holds true across the entire tree.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -53,62 +49,80 @@ $N$ : number of nodes in the tree.
 ```
 //User function Template for Java
 
-/* A Binary Tree node
-class Node
-{
-    int data;
-    Node left, right;
 
-    Node(int item)
-    {
-        data = item;
-        left = right = null;
-    }
+/*Complete the function below
+Node is as follows:
+class Node{
+	int data;
+	Node left,right;
+	
+	Node(int key)
+	{
+	    data = key;
+	    left = right = null;
+	}
 }
+
 */
 
 class Solution {
-
-    // Checking if the tree is balanced
-    boolean check(Node root) {
-        // Finding the maximum and minimum depths
-        int maxDepth = findMaxDepth(root);
-        int minDepth = findMinDepth(root);
-
-        // Returning true if the maximum and minimum depths are equal, indicating a balanced tree
-        return maxDepth == minDepth;
+    // Function to check whether all nodes of a tree have the value 
+    // equal to the sum of their child nodes.
+    
+    public static int isSumProperty(Node root) {
+        if (root == null) {
+            // Handling the case where the tree is empty
+            return 1;  // As an empty tree vacuously satisfies the sum property
+        }
+        return Helper(root) ? 1 : 0;
     }
 
-    // Helper method to find the maximum depth of the tree
-    static int findMaxDepth(Node currentNode) {
-        // Base case: if the current node is null, returniing 0
-        if (currentNode == null)
-            return 0;
+    static Queue<Node> q;
 
-        // Recursively finding the maximum depth of the left and right subtrees
-        int leftDepth = findMaxDepth(currentNode.left);
-        int rightDepth = findMaxDepth(currentNode.right);
+    static boolean Helper(Node root) {
+        // Initializing a queue for level order traversal
+        q = new LinkedList<>();
+        // Enqueuing the root node to start the traversal
+        q.offer(root);
+        // Enqueuing null to mark the end of the current level
+        q.offer(null);
 
-        // Returning the maximum depth among the left and right subtrees, plus 1 for the current level
-        return 1 + Math.max(leftDepth, rightDepth);
+        while (!q.isEmpty()) {
+            // Dequeuing the current node
+            Node tatkal = q.poll();
+
+            // If the current node is null, it indicates the end of the current level
+            if (tatkal == null) {
+                // If there are more elements in the tree, enqueuing null to mark the end of the next level
+                if (!q.isEmpty()) {
+                    q.offer(null);
+                    continue;
+                }
+            } else {
+                // Initializing the sum of child node values
+                int jor = 0;
+                
+                // Enqueuing the left child and update the sum
+                if (tatkal.left != null) {
+                    q.offer(tatkal.left);
+                    jor += tatkal.left.data;
+                }
+                
+                // Enqueuing the right child and update the sum
+                if (tatkal.right != null) {
+                    q.offer(tatkal.right);
+                    jor += tatkal.right.data;
+                }
+                
+                // Checking if the sum of child node values is not equal to the current node's data
+                // Also, ensuring that the sum is not zero (to handle leaf nodes)
+                if (jor != tatkal.data && jor != 0) {
+                    return false;  // Returning false if the sum property is violated
+                }
+            }
+        }
+        // Returning true if the entire tree satisfies the sum property
+        return true;
     }
-
-    // Helper method to find the minimum depth of the tree
-    static int findMinDepth(Node currentNode) {
-        // Base case: if the current node is null, returning the maximum integer value
-        if (currentNode == null)
-            return Integer.MAX_VALUE;
-
-        // Base case: if the current node is a leaf node, returning 1
-        if (currentNode.left == null && currentNode.right == null)
-            return 1;
-
-        // Recursively finding the minimum depth of the left and right subtrees
-        int leftDepth = findMinDepth(currentNode.left);
-        int rightDepth = findMinDepth(currentNode.right);
-
-        // Returning the minimum depth among the left and right subtrees, plus 1 for the current level
-        return 1 + Math.min(leftDepth, rightDepth);
-    }
-}       
+}    
 ```
