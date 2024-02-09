@@ -2,33 +2,37 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 09-02-24 
-## [Check for Children Sum Property in a Binary Tree](https://www.geeksforgeeks.org/problems/children-sum-parent/1)
+## Today's 10-02-24 
+## [Number of paths in a matrix with k coins](https://www.geeksforgeeks.org/problems/number-of-paths-in-a-matrix-with-k-coins2728/1)
 
 ## Intuition
 
-This problem at hand involved verifying whether every node in a tree adheres to a sum property: having a value equal to the sum of its child nodes. My algorithm employed a level-order traversal to systematically process nodes and validate this sum property across the entire tree.
+This problem involved finding the number of paths in a 2D matrix from the top-left corner to the bottom-right corner, such that the sum of values along the path is equal to a given target value 'k'. Each cell in the matrix has a value, and I can move only down or right.
+
+To efficiently solve this problem, I employed dynamic programming with memoization. My idea was to store and reuse the results of subproblems to avoid redundant computations.
 
 ## Approach
 
-**Checked for Empty Tree :**
-- If the tree is empty, it trivially satisfies the sum property.
+**Initialization :**
+- Created a 3D array `gp` to store the intermediate results.
+- Initialized all entries of `gp` with -1 to mark them as not computed.
 
-**Initialized a Queue for Level Order Traversal :**
-- Established a queue tailored for a level-order traversal.
+**Recursive Helper Function :**
+- Implemented a recursive function `helper` that calculates the number of paths for a given state `(a, b, k)`.
+- Base cases :
+  - If indices `a` or `b` go out of bounds, or if `k` becomes negative, returned 0.
+  - If reaching the top-left corner (a=0, b=0), check if `k` matched the value in the cell. Returned 1 if true, 0 otherwise.
+- If the result for the current state is already computed (`gp[a][b][k] != -1`), returned the stored result.
+- Recursive case :
+  - Calculated the number of paths by moving left (`helper(mat, a - 1, b, k - mat[a][b])`) and up (`helper(mat, a, b - 1, k - mat[a][b])`).
+  - Stored the result in `gp[a][b][k]`.
 
-**Level Order Traversal :**
-- Employed a while loop until the queue becomes empty.
-- Dequeued the current node and process its children.
+**Main Function (`numberOfPath`) :**
+- Initialized `gp` and filled it with intermediate results.
+- Called the `helper` function with the input matrix `arr`, dimensions `n` and target sum `k`.
+- Returned the final result.
 
-**Calculated Sum and Checked Property :**
-- For each node, calculated the sum of its child nodes and ensured it equals the node's value.
-- Returned false if the sum property is violated.
-
-**Returned the Result :**
-- If the entire tree satisfied the sum property, returned true.
-
-My algorithm systematically verified the sum property for each node in a tree using a level-order traversal, ensuring the property holds true across the entire tree.
+By using dynamic programming and memoization, my approach avoided redundant computations and efficiently calculated the number of paths with the given constraints.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -36,12 +40,12 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(N)$
+- Time complexity : $O(n * n * 101)$ $\equiv$ $O(n^2)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
 
-$N$ : number of nodes in the tree.
+$n$ : size of the matrix (assuming `n` rows and `n` columns).
 
-- Space complexity : $O(N)$ 
+- Space complexity : $O(n * n * 101)$ $\equiv$ $O(n^2)$ 
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code 
@@ -49,80 +53,51 @@ $N$ : number of nodes in the tree.
 ```
 //User function Template for Java
 
-
-/*Complete the function below
-Node is as follows:
-class Node{
-	int data;
-	Node left,right;
-	
-	Node(int key)
-	{
-	    data = key;
-	    left = right = null;
-	}
-}
-
-*/
-
 class Solution {
-    // Function to check whether all nodes of a tree have the value 
-    // equal to the sum of their child nodes.
     
-    public static int isSumProperty(Node root) {
-        if (root == null) {
-            // Handling the case where the tree is empty
-            return 1;  // As an empty tree vacuously satisfies the sum property
-        }
-        return Helper(root) ? 1 : 0;
-    }
+    // Creating a 3D array to store intermediate results
+    static long[][][] gp; 
 
-    static Queue<Node> q;
-
-    static boolean Helper(Node root) {
-        // Initializing a queue for level order traversal
-        q = new LinkedList<>();
-        // Enqueuing the root node to start the traversal
-        q.offer(root);
-        // Enqueuing null to mark the end of the current level
-        q.offer(null);
-
-        while (!q.isEmpty()) {
-            // Dequeuing the current node
-            Node tatkal = q.poll();
-
-            // If the current node is null, it indicates the end of the current level
-            if (tatkal == null) {
-                // If there are more elements in the tree, enqueuing null to mark the end of the next level
-                if (!q.isEmpty()) {
-                    q.offer(null);
-                    continue;
-                }
-            } else {
-                // Initializing the sum of child node values
-                int jor = 0;
-                
-                // Enqueuing the left child and update the sum
-                if (tatkal.left != null) {
-                    q.offer(tatkal.left);
-                    jor += tatkal.left.data;
-                }
-                
-                // Enqueuing the right child and update the sum
-                if (tatkal.right != null) {
-                    q.offer(tatkal.right);
-                    jor += tatkal.right.data;
-                }
-                
-                // Checking if the sum of child node values is not equal to the current node's data
-                // Also, ensuring that the sum is not zero (to handle leaf nodes)
-                if (jor != tatkal.data && jor != 0) {
-                    return false;  // Returning false if the sum property is violated
+    // Function to calculate the number of paths
+    long numberOfPath(int n, int k, int[][] arr) {
+        // Initializing the 3D array with -1
+        gp = new long[n][n][101];
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j < n; j++){
+                for (int l = 0; l <= 100; l++){
+                    gp[i][j][l] = -1;
                 }
             }
         }
-        // Returning true if the entire tree satisfies the sum property
-        return true;
+ 
+        // Calling the helper function with the input matrix, dimensions, and k
+        return helper(arr, n - 1, n - 1, k);
     }
-}    
+
+    // Helper function for recursive calculation
+    static long helper(int[][] mat, int a, int b, int k){
+        
+        // Base case : if indices go out of bounds or k becomes negative
+        if (a < 0 || b < 0 || k < 0){
+            return 0;
+        }
+        
+        // Base case : if we reach the top-left cell, then checking if k matches the value in the cell
+        if (a == 0 && b == 0){
+            return (k == mat[a][b] ? 1 : 0);
+        }
+        
+        // If the result for the current state is already computed, then returning it
+        if (gp[a][b][k] != -1){
+            return gp[a][b][k];
+        }
+        
+        // Recursive case : calculating the number of paths by moving left and up
+        gp[a][b][k] = helper(mat, a - 1, b, k - mat[a][b]) + helper(mat, a, b - 1, k - mat[a][b]);
+        
+        // Returning the computed result for the current state
+        return gp[a][b][k];
+    }
+}
+            
 ```
