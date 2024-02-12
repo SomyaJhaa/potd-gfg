@@ -2,38 +2,35 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 11-02-24 [Problem Link](https://www.geeksforgeeks.org/problems/recamans-sequence4856/1)
-## Recamans sequence
+## Today's 12-02-24 [Problem Link](https://www.geeksforgeeks.org/problems/recursive-sequence1611/1)
+## Recursive sequence
 
 ## Intuition
-The Recaman Sequence is a mathematical sequence defined by the following rules :
-- Start with 0 as the first element.
-- For each subsequent element at index 'i' :
-    - If 'i' can be subtracted from the previous element resulting in a positive number not already present, subtract 'i'.
-    - Otherwise, add 'i' to the previous element.
+My code aimed to calculate a sequence based on the given logic. It used modular arithmetic to prevent integer overflow while performing calculations. The sequence involved iteratively multiplying consecutive integers starting from 1 and accumulating the results.
 
 ## Approach
 
-**Initialization :**
-- Created an ArrayList (`jawab`) to store the Recaman sequence.
-- Initialized a HashSet (`h`) to efficiently check for the existence of elements.
+- Initialized two static variables :
+   - `mod` : A constant representing the modulus for performing modular arithmetic.
+   - `jawab` : A static variable to store the final answer.
 
-**Base Case :**
-- If the requested length `n` is 0, returned an empty ArrayList as there are no elements to generate.
+- Defined a static function `sequence` that takes an integer `n` as input and returns a long value.
 
-**Sequence Generation :**
-- Started with 0 as the first element and added it to both the ArrayList and HashSet.
-- Iterated from 1 to `n-1` to generated the subsequent elements in the sequence.
-- For each iteration :
-  - Calculated the potential next element by subtracting `i` or adding `i` to the previous element.
-  - Checked if the calculated value is valid (greater than 0) and not already present in the HashSet.
-  - If valid, added the element to both the ArrayList and HashSet; otherwise, used the addition operation.
+- Inside the function :
+   - Initialized `jawab` to 0, representing the cumulative result of the sequence.
+   - Initialized a temporary variable `t` to 1, which is used for consecutive integer multiplication.
 
-**Returned the Result :**
-- Returned the generated Recaman sequence stored in the ArrayList.
+- Iterated from 1 to `n` :
+   - Initialized a temporary variable `m` to 1, representing the product.
+   - Used a counter `c` to perform `c` consecutive multiplications.
+   - Multiplied `m` by `t`, update `t`, and take the result modulo `mod`.
+   - Accumulated the result of `m % mod` to `jawab`, updating it with each iteration.
 
-### Summary :
-My approach involved a systematic generation of elements in the Recaman sequence, adhering to specific rules at each step. Efficient element existence checked using a HashSet prevented duplicates in the sequence. The final result is the Recaman sequence stored in an ArrayList.
+- After the loop, `jawab` contained the final result of the sequence.
+
+- Returned the final result `jawab`.
+
+My code effectively calculated the specified sequence by iteratively multiplying consecutive integers, taking care to use modular arithmetic to handle large results and prevent overflow.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -41,59 +38,53 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(n)$
+- Time complexity : $O(n^2)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
 
-$n$ : given
+$n$ : given input parameter 
 
-- Space complexity : $O(n)$
+- Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code 
 
 ```
-//User function Template for Java
+// User function Template for Java
 
-class Solution {
-    static ArrayList<Integer> jawab; // ArrayList to store the Recaman sequence
-    static HashSet<Integer> h; // HashSet to efficiently check for element existence
+class Solution{
+    
+    // Static variables for modulus and the final answer
+    static int mod = 1_000_000_007;
+    static long jawab;
 
-    static ArrayList<Integer> recamanSequence(int n) {
+    // Function to calculate the sequence
+    static long sequence(int n){
         
-        // Checking if n is 0, return an empty ArrayList
-        if (n == 0) {
-            return new ArrayList<>();
-        }
+        // Initializing the answer variable
+        jawab = 0;
+        // Temporary variable for multiplication
+        int t = 1;
 
-        // Initializing ArrayList and HashSet
-        jawab = new ArrayList<>();
-        h = new HashSet<>();
+        // Iterating from 1 to n
+        for (int i = 1; i <= n; i++) {
+            // Temporary variable for the product
+            long m = 1;
+            // Counter variable
+            int c = i;
 
-        // Initializing the sequence with 0
-        jawab.add(0);
-        h.add(0);
-
-        // Generating the Recaman sequence
-        for (int i = 1; i < n; i++) {
-            int p = jawab.get(i - 1);
-
-            // Calculating the next element in the sequence
-            int subtract = p - i;
-            
-            // Checking if the subtracted value is valid and not already in the HashSet
-            if (subtract > 0 && !h.contains(subtract)) {
-                jawab.add(subtract);
-                h.add(subtract);
-            } else {
-                // If not, using the addition operation
-                int add = p + i;
-                jawab.add(add);
-                h.add(add);
+            // Calculating the product of t * (t + 1) * ... * (t + c - 1)
+            while (c-- > 0) {
+                m *= t;
+                m %= mod;
+                t++;
             }
+
+            // Updating the final answer with the calculated product, modulo mod
+            jawab = (jawab + m % mod) % mod;
         }
 
-        // Returning the generated Recaman sequence
+        // Returning the final answer
         return jawab;
     }
-}         
+}     
 ```
