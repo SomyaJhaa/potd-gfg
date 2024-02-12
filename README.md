@@ -2,8 +2,8 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 12-02-24 [Problem Link](https://www.geeksforgeeks.org/problems/recursive-sequence1611/1)
-## Recursive sequence
+## Today's 12-02-24 
+## [Recursive sequence](https://www.geeksforgeeks.org/problems/recursive-sequence1611/1)
 
 ## Intuition
 My code aimed to calculate a sequence based on the given logic. It used modular arithmetic to prevent integer overflow while performing calculations. The sequence involved iteratively multiplying consecutive integers starting from 1 and accumulating the results.
