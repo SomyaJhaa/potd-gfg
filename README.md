@@ -2,35 +2,36 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 29-02-24 [Problem Link](https://www.geeksforgeeks.org/problems/sum-of-bit-differences2937/1)
-## Sum of bit differences
+## Today's 01-03-24 [Problem Link](https://www.geeksforgeeks.org/problems/peak-element/1)
+## Peak element
 
 ## Intuition
-The problem involves finding the sum of bit differences across all pairs of elements in an array. Bit difference at a particular position is the count of pairs where one element has the bit set (1) and the other has the bit unset (0) at that position.
+The goal is to find a peak element in the given array. A peak element is an element that is greater than or equal to its neighbors. The code uses a binary search approach to efficiently locate a peak element.
 
 ## Approach
 
-**Initialized the Result :** I initialized a variable (`jawab`) to store the final result.
+ **Binary Search :**
+   - I initialized the pointers `l`, `r`, and `m` for binary search. `l` points to the start of the array, `r` points to the end, and `m` represents the middle index.
+   - Performed a binary search until a peak element is found.
+  
+**Checked for Peak Element :**
+   - At each step, checked if the element at index `m` is a peak.
+   - A peak element must be greater than or equal to its neighbors (if they exist).
 
-**Iterated Through Bits (0 to 31) :** Looped through each bit position (from 0 to 31 for 32-bit integers).
+**Updated Search Space :**
+   - If the middle element is not a peak, adjusted the search space based on the comparisons with its neighbors.
+     - If the element to the left of `m` is greater, searched in the left half.
+     - If the element to the right of `m` is greater or equal, searched in the right half.
 
-**Count Set Bits :** For each bit position, I counted the number of elements in the array where the bit is set (1) at that position.
+**Break Condition :**
+   - Break out of the binary search loop when a peak element is found (the conditions for a peak are satisfied).
 
-**Updated the Result :** Updated the result (`jawab`) by adding twice the product of the count of set bits and the count of unset bits at the current position.
+**Returned Peak Index :**
+   - Returned the index `m` as the result, representing the index of the peak element.
 
-**Repeated for Each Bit Position :** Repeated steps 3-4 for all 32 bit positions.
+The binary search efficiently reduces the search space in each iteration, making the algorithm more time-efficient.
 
-**Result:** Returned the final result (`jawab`).
-
-
-- For each bit position, I counted the number of set bits and unset bits in the array.
-- The count of set bits (`c`) represented the number of elements where the bit is set at that position.
-- The count of unset bits is `(n - c)`, where `n` is the total number of elements.
-- The bit differences for the current position are given by `2 * (n - c) * c`.
-- Summing up these bit differences for all positions gived the final result.
-
-
-My approach ensures an efficient calculation of the sum of bit differences without explicitly comparing each pair of elements.
+My code ensured that it finds a valid peak element by considering edge cases at the boundaries of the array.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -38,74 +39,54 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(32 * n)$ ${\equiv}$ $O(n)$
+- Time complexity : $O( log n)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
 
 - Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
-   
-## ETON 
-My java code is correct but giving error on last five test cases ( It passed 1100 / 1115 testcases). So I submitted the same logic in Python language and it gets accepted. This may be due to server error from GeeksforGeeks end, anyways I have provided my Python code as well. You just grasp the logic as both code's logic are same.
 
-## Java Code
+## Code
 
 ```
 // User function Template for Java
 
+/*Complete the function below*/
+
 class Solution {
+    // Function to find the peak element
+    // arr[]: input array
+    // n: size of array a[]
     
-    // Variable to store the final result
-    static long jawab;
-
-    // Function to calculate the sum of bit differences
-    long sumBitDifferences(int[] arr, int n) {
+    public int peakElement(int[] arr, int n) {
         
-        // Initializing the result variable
-        jawab = 0;
+        // Initializing pointers for binary search
+        int l = 0;
+        int r = n - 1;
+        int m = 0; // Variable to store the middle index
 
-        // Iterating through each bit position (0 to 31 for 32-bit integers)
-        for (int i = 0; i < 32; i++) {
-            // Counting the number of set bits at the current position
-            int c = 0;
-            for (int j = 0; j < n; j++) {
-                // Checking if the bit at the current position is set in the current element
-                if (((1 << i) & arr[j]) != 0) {
-                    c++;
-                }
+        // Performing binary search to find the peak element
+        while (l <= r) {
+            
+            // Calculating the middle index using bitwise right shift (equivalent to dividing by 2)
+            m = (l + r) >> 1;
+
+            // Checking if the middle element is a peak (greater than or equal to its neighbors)
+            if ((m == 0 || arr[m - 1] <= arr[m]) && (m == n - 1 || arr[m + 1] <= arr[m])) {
+                // If it's a peak, break out of the loop
+                break;
             }
 
-            // Updating the result using the count of set and unset bits at the current position
-            jawab += (2 * (n - c) * c);
+            // If the element to the left of the middle is greater, searching in the left half
+            if (m > 0 && arr[m - 1] > arr[m]) {
+                r = m - 1;
+            } else {
+                // If the element to the right of the middle is greater or equal, searching in the right half
+                l = m + 1;
+            }
         }
 
-        // Returning the final result
-        return jawab;
+        // Returning the index of the peak element
+        return m;
     }
 }
-```
-
-## Python Code
-
-```
-# User function Template for python3
-
-class Solution:
-
-    # Static variable to store the result
-    jawab = 0
-    
-    def sumBitDifferences(self, arr, n):
-        # Initialize result
-        Solution.jawab = 0
-
-        # Iterated through each bit position (0 to 31 for 32-bit integers)
-        for i in range(0, 32):
-            # Counted number of elements with i'th bit set
-            c = 0
-            for j in range(0, n):
-                if ( (1 << i) & arr[j] ):
-                    c += 1
-            Solution.jawab += (2 * (n - c) * c)
-
-        return Solution.jawab
 ```
