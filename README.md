@@ -1,30 +1,35 @@
+🚀 Enjoy exploring my solution and keep the coding spirit alive! Happy coding ! ✨
+
+
 ## Problem Of The Day Solutions
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 08-03-24 [Problem Link](https://www.geeksforgeeks.org/problems/check-frequencies4211/1)
-## Check if frequencies can be equal
+## Today's 11-03-24 [Problem Link](https://www.geeksforgeeks.org/problems/count-pairs-sum-in-matrices4332/1)
+## Count pairs Sum in matrices
 
 ## Intuition
-The goal is to determine if it's possible to rearrange the characters in a given string such that they all have the same frequency or if they already have the same frequency.
-I think it will involve checking the initial frequencies and attempting a rearrangement if needed.
+My provided code defines a class `Solution` with a method `countPairs` that calculates the count of pairs from two matrices whose sum equals a given value `x`.
 
 ## Approach
 
-**Checked Initial Frequency :**
-   - The `sbSame` function iterates through the character frequencies in the given string.
-   - It ensured that there is only one distinct frequency, indicating whether all characters have the same initial frequency.
+##### Initialization :
+- Initialized two HashSet objects, `h1` and `h2`, to store unique values from the first and second matrices, respectively.
+- Initialized an integer variable `jawab` to store the count of pairs.
 
-**Attempt Rearrangement :**
-   - If the initial frequencies are the same, the string already satisfies the condition, and the function returns true.
-   - If the initial frequencies differ, attempt to make them equal by decrementing the frequency of each character one by one.
-   - After each decrement, checked if all frequencies become the same.
-   - If at any point all frequencies become the same, the function returned true.
+##### Populated the HashSets :
+- Iterated through each element of the first matrix (`mat1`) and added its value to `h1`.
+- Iterated through each element of the second matrix (`mat2`) and added its value to `h2`.
 
-**Final Result :**
-   - If neither the initial frequencies nor any rearrangement satisfies the condition, the function returned false.
+##### Counting Pairs :
+- Iterated through the values in `h1`.
+- For each value `v` in `h1`, checked if there exists a value in `h2` such that their sum equals the given value `x - v`.
+- If such a value is found in `h2`, incremented the count (`jawab`) for each pair.
 
-My approach efficiently checked whether the string can have the same frequency for all characters by either having them initially equal or making them equal through a single decrement for at most one character.
+##### Result :
+- The final count of pairs is stored in the variable `jawab`.
+
+My approach ensured that unique values from both matrices are stored in separate HashSet objects, and then it iterated through one HashSet to check for pairs in the other HashSet whose sum equals the given value `x`.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -32,10 +37,12 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O( n )$
+- Time complexity : $O( N1 + N2 )$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$n$ : length of the input string `s`
-- Space complexity : $O( 26 )$ ${\equiv}$ $O( 1 )$
+$N1$ : total number of elements in the first matrix
+
+$N2$ : total number of elements in the second matrix
+- Space complexity : $O( N1 + N2 )$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -45,57 +52,46 @@ $n$ : length of the input string `s`
 
 class Solution {
     
+    // HashSet to store unique values from the first matrix
+    static HashSet<Integer> h1;
+    // HashSet to store unique values from the second matrix
+    static HashSet<Integer> h2;
+    // Variable to store the count of pairs
+    static int jawab;
+
+    // Method to count pairs from two matrices whose sum equals x
+    int countPairs(int mat1[][], int mat2[][], int n, int x) {
     
-    // Array to store the frequency of each character
-    static int[] kitnibaar;
-    
-    // Main method to check if the string has the same frequency for all characters
-    boolean sameFreq(String s) {
-        
-        // Initializing the frequency array
-        kitnibaar = new int[26];
- 
-        // Updating the frequency array based on the characters in the string
-        for (char c : s.toCharArray()) {
-            kitnibaar[c - 'a']++;
-        }
-        
-        // Checking if all frequencies are initially the same
-        if (sbSame()) {
-            return true;
-        }
- 
-        // Trying decrementing each character's frequency and checking if all frequencies become the same
-        for (int i = 0; i < 26; i++) {
-            if (kitnibaar[i] > 0) {
-                kitnibaar[i]--;
-                if (sbSame()) {
-                    return true;
-                }
-                kitnibaar[i]++;
+        // Initializing HashSet h1 with unique values from the first matrix
+        h1 = new HashSet<>();
+        for (int i = 0; i < mat1.length; i++) {
+            for (int j = 0; j < mat1[0].length; j++) {
+                h1.add(mat1[i][j]);
             }
         }
- 
-        // If no such rearrangement is possible, returning false
-        return false;
-    }
-    
-    // Method to check if all frequencies are the same
-    static boolean sbSame() {
-        int ekjaisa = 0;
-        for (int i = 0; i < 26; i++) {
-            if (kitnibaar[i] > 0) {
-                ekjaisa = kitnibaar[i];
-                for (int j = i + 1; j < 26; j++) {
-                    if (kitnibaar[j] > 0 && kitnibaar[j] != ekjaisa) {
-                        return false;
-                    }
-                }
+
+        // Initializing HashSet h2 with unique values from the second matrix
+        h2 = new HashSet<>();
+        for (int i = 0; i < mat2.length; i++) {
+            for (int j = 0; j < mat2[0].length; j++) {
+                h2.add(mat2[i][j]);
             }
         }
-        
-        return true;
+
+        // Initializing jawab (count) to 0
+        jawab = 0;
+
+        // Iterating through values in h1
+        for (int v : h1) {
+            // Checking if there exists a value in h2 such that their sum equals x
+            if (h2.contains(x - v)) {
+                // Incrementing the count for each such pair
+                jawab++;
+            }
+        }
+
+        // Returning the final count of pairs
+        return jawab;
     }
-    
 }
 ```
