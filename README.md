@@ -2,31 +2,35 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 11-03-24 [Problem Link](https://www.geeksforgeeks.org/problems/count-pairs-sum-in-matrices4332/1)
-## Count pairs Sum in matrices
+## Today's 12-03-24 
+
+## [Generalised Fibonacci numbers](https://www.geeksforgeeks.org/problems/generalised-fibonacci-numbers1820/1)
 
 ## Intuition
-My provided code defines a class `Solution` with a method `countPairs` that calculates the count of pairs from two matrices whose sum equals a given value `x`.
+The goal of my algorithm should be to efficiently calculate the Fibonacci number modulo m using matrix exponentiation. 
 
 ## Approach
 
-##### Initialization :
-- Initialized two HashSet objects, `h1` and `h2`, to store unique values from the first and second matrices, respectively.
-- Initialized an integer variable `jawab` to store the count of pairs.
+The approach involved representing the Fibonacci transformation as a matrix and then using binary exponentiation to compute the matrix power.
 
-##### Populated the HashSets :
-- Iterated through each element of the first matrix (`mat1`) and added its value to `h1`.
-- Iterated through each element of the second matrix (`mat2`) and added its value to `h2`.
+**Identity Matrix Initialization :**
+   - Initialized a static 3x3 matrix `hm` representing the identity matrix.
 
-##### Counting Pairs :
-- Iterated through the values in `h1`.
-- For each value `v` in `h1`, checked if there exists a value in `h2` such that their sum equals the given value `x - v`.
-- If such a value is found in `h2`, incremented the count (`jawab`) for each pair.
+**genFibNum Function :**
+   - Defined a function `genFibNum` that takes the coefficients a, b, c, the target Fibonacci term `n`, and the modulo value `m`.
+   - Base Case : If `n` is less than or equal to 2, returned 1.
+   - Initialized the matrix `h1` with the identity matrix `hm`.
+   - Initialized the transformation matrix `h2` with the given coefficients.
+   - Subtracted 2 from `n` as the base cases are already handled.
+   - Used binary exponentiation to calculate `h1 = h2^n % m`.
+   - Calculated the sum of the first row of the resulting matrix `h1` modulo `m` and returned the result.
 
-##### Result :
-- The final count of pairs is stored in the variable `jawab`.
+**multiplyMatrices Function :**
+   - Defined a helper function `multiplyMatrices` to perform matrix multiplication modulo `m`.
+   - Iterated through the matrices `mat1` and `mat2` to calculate the product, considering the modulo operation.
 
-My approach ensured that unique values from both matrices are stored in separate HashSet objects, and then it iterated through one HashSet to check for pairs in the other HashSet whose sum equals the given value `x`.
+My algorithm leveraged matrix exponentiation to efficiently compute the Fibonacci number modulo `m`, providing a scalable and optimized solution for large Fibonacci terms.
+
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -34,12 +38,11 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O( N1 + N2 )$
+- Time complexity : $O( log n )$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$N1$ : total number of elements in the first matrix
+$n$ : target Fibonacci term
 
-$N2$ : total number of elements in the second matrix
-- Space complexity : $O( N1 + N2 )$
+- Space complexity : $O( 1 )$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -49,46 +52,68 @@ $N2$ : total number of elements in the second matrix
 
 class Solution {
     
-    // HashSet to store unique values from the first matrix
-    static HashSet<Integer> h1;
-    // HashSet to store unique values from the second matrix
-    static HashSet<Integer> h2;
-    // Variable to store the count of pairs
-    static int jawab;
+    // Static matrix representing the identity matrix
+    static long[][] hm = {
+        {1, 0, 0},
+        {0, 1, 0},
+        {0, 0, 1}
+    };
 
-    // Method to count pairs from two matrices whose sum equals x
-    int countPairs(int mat1[][], int mat2[][], int n, int x) {
-    
-        // Initializing HashSet h1 with unique values from the first matrix
-        h1 = new HashSet<>();
-        for (int i = 0; i < mat1.length; i++) {
-            for (int j = 0; j < mat1[0].length; j++) {
-                h1.add(mat1[i][j]);
+    // Function to calculate Fibonacci number modulo m
+    static long genFibNum(Long a, Long b, Long c, long n, long m) {
+       
+        // Base case: return 1 if n is 1 or 2
+        if (n <= 2) {
+            return 1;
+        }
+
+        // Initializing the matrix h1 with the identity matrix
+        long[][] h1 = hm;
+
+        // Initializing the transformation matrix h2
+        long[][] h2 = {
+            {a, b, c},
+            {1, 0, 0},
+            {0, 0, 1}
+        };
+
+        // Subtracting 2 from n as the base cases are already handled
+        n -= 2;
+
+        // Performing matrix exponentiation using binary exponentiation
+        while (n > 0) {
+            if ((n & 1) == 1) {
+                h1 = multiplyMatrices(h1, h2, m);
+            }
+            h2 = multiplyMatrices(h2, h2, m);
+            n >>= 1;
+        }
+
+        // Calculating the sum of the first row of the resulting matrix modulo m
+        long result = 0;
+        for (long value : h1[0]) {
+            result = (result + value) % m;
+        }
+
+        return result;
+    }
+
+    // Helper function to multiply two matrices modulo m
+    static long[][] multiplyMatrices(long[][] mat1, long[][] mat2, long m) {
+        int rows = mat1.length;
+        int cols = mat2[0].length;
+        long[][] result = new long[rows][cols];
+
+        // Performing matrix multiplication
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                for (int k = 0; k < mat1[0].length; k++) {
+                    result[i][j] = (result[i][j] + (mat1[i][k] * mat2[k][j]) % m) % m;
+                }
             }
         }
 
-        // Initializing HashSet h2 with unique values from the second matrix
-        h2 = new HashSet<>();
-        for (int i = 0; i < mat2.length; i++) {
-            for (int j = 0; j < mat2[0].length; j++) {
-                h2.add(mat2[i][j]);
-            }
-        }
-
-        // Initializing jawab (count) to 0
-        jawab = 0;
-
-        // Iterating through values in h1
-        for (int v : h1) {
-            // Checking if there exists a value in h2 such that their sum equals x
-            if (h2.contains(x - v)) {
-                // Incrementing the count for each such pair
-                jawab++;
-            }
-        }
-
-        // Returning the final count of pairs
-        return jawab;
+        return result;
     }
 }
 ```
