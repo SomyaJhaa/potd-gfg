@@ -26,6 +26,7 @@ The space complexity of the given approach is O(1), as it uses a constant amount
 
 ## Code
 
+```
 class Solution
 {
     public:
@@ -83,3 +84,5 @@ class Solution
          *head=dummy3->next;
     }
 };
+        
+```
