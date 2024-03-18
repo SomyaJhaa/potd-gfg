@@ -2,87 +2,86 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 15-03-24 
+## Today's 18-03-24 
 
-## [Linked List that is Sorted Alternatingly](https://www.geeksforgeeks.org/problems/linked-list-that-is-sorted-alternatingly/1)
+## [Level order traversal](https://www.geeksforgeeks.org/problems/level-order-traversal/1)
 
-### Intuition:
-The given linked list is in alternating ascending and descending order. To sort this linked list in non-decreasing order, the approach needs to break the linked list into two halves, one containing the ascending elements and the other containing the descending elements. Then, merge these two halves in a sorted manner.
+## Intuition
+- Perform a level order traversal of the binary tree.
+- Use a queue to keep track of nodes at each level.
+- Iterate through each level and add the nodes' values to the result list.
 
-### Approach:
-1. Define a function `revv()` to reverse a linked list.
-2. Create a dummy node and set its next pointer to the head of the original linked list.
-3. Traverse the original linked list to find the midpoint and split the list into two halves: one containing ascending elements and the other containing descending elements.
-4. Reverse the descending half using the `revv()` function.
-5. Merge the two sorted halves into one sorted linked list.
-6. Update the head pointer of the original linked list to point to the merged sorted list.
+## Approach
 
-### Time Complexity:
-The time complexity of the given approach is O(n), where n is the number of nodes in the linked list. This is because the algorithm traverses the linked list only once to split and merge it.
+**Initialization :** Initialized an empty ArrayList to store the level order traversal.
 
-### Space Complexity:
-The space complexity of the given approach is O(1), as it uses a constant amount of extra space irrespective of the size of the input linked list. The space complexity does not depend on the size of the input linked list, only on the fixed amount of space required for temporary variables and pointers.
+**Base Case :** If the root is null, returned an empty ArrayList.
 
+**Breadth-First Traversal :** Used a queue to perform a breadth-first traversal of the tree.
+
+**Iterated Levels :** While the queue is not empty, iterated through each level :
+- For each node in the current level :
+  - Added its value to the result list.      
+  - If the left child exists, enqueued it.
+  - If the right child exists, enqueued it.
+
+**Result :** Returned the ArrayList containing the level order traversal.
+
+---
+Have a look at the code , still have any confusion then please let me know in the comments
+
+Keep Solving.:)
+
+## Complexity
+- Time complexity : $O( n )$
+<!-- Add your time complexity here, e.g. $$O())$$ -->
+$n$ :  number of nodes in the tree
+- Space complexity : $O( n )$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
 
 ```
+//  User function Template for Java
+
+/*
+class Node
+{
+    int data;
+    Node left, right;
+
+    Node(int item)
+    {
+        data = item;
+        left = right = null;
+    }
+}
+*/
 class Solution
 {
-    public:
-    Node * revv(Node *curr){
-        Node *prev=NULL;
-        Node *next;
-        while(curr){
-            next=curr->next;
-            curr->next=prev;
-            prev=curr;
-            curr=next;
-        }
-        return prev;
-    }
-    // your task is to complete this function
-    void sort(Node **head)
+    //Function to return the level order traversal of a tree.
+    static ArrayList <Integer> levelOrder(Node root) 
     {
-         // Code here
-         Node *dummy=new Node(-1);
-         Node *temp=*head;
-         dummy->next=temp;
-         Node *l2=temp->next;
-         Node *dummy2=new Node(-1);
-         dummy2->next=l2;
-         while(temp&&temp->next){
-             temp->next=temp->next->next;
-             temp=temp->next;
-             if(l2->next)
-             l2->next=temp->next;
-             l2=l2->next;
-         }
-         l2=revv(dummy2->next);
-         temp=dummy->next;
-         Node *p1=temp,*p2=l2;
-         Node *dummy3=new Node(-1);
-         Node *t=dummy3;
-         while(p1&&p2){
-             if(p1->data<=p2->data){
-                 t->next=p1;
-                 t=t->next;
-                 p1=p1->next;
-             }
-             else{
-                 t->next=p2;
-                 t=t->next;
-                 p2=p2->next;
-             }
-         }
-         if(p1){
-             t->next=p1;
-         }
-         if(p2){
-             t->next=p2;
-         }
-         *head=dummy3->next;
+        // Your code here
+        if( root == null){
+            return new ArrayList<>();
+        }
+        ArrayList<Integer> jawab = new ArrayList<>();              // to store the jawabwer : initially added root node
+        Queue<Node> q = new ArrayDeque<>( Arrays.asList(root));  // maintaining queue to store nodes as they appear left to right in a level: 
+
+        while( !q.isEmpty()){
+            for( int i = q.size(); i > 0; i--){         // iterating over each element in that level
+                Node t = q.poll();                      // popping queue to get a node
+                jawab.add(t.data);                        // storing its value
+                if( t.left != null){                    // if left child present then adding it to queue to furthur iterations in upcoming levels
+                    q.offer(t.left);
+                }
+                if( t.right != null){                   // if right child present then adding it to queue to furthur iterations in upcoming levels
+                    q.offer(t.right);
+                }
+            }
+        }
+        return jawab;
     }
-};
-        
+}
 ```
