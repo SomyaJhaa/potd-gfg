@@ -2,33 +2,20 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 21-03-24 
+## Today's 22-03-24 
 
-## [ZigZag Tree Traversal](https://www.geeksforgeeks.org/problems/zigzag-tree-traversal/1)
+## [Diagonal sum in binary tree](https://www.geeksforgeeks.org/problems/diagonal-sum-in-binary-tree/1)
 
 ## Intuition
-The task is to perform a zigzag traversal of a binary tree, alternating between left-to-right and right-to-left at each level.
+To calculate the diagonal sum of a binary tree, I traverse the tree in a diagonal manner, adding the values of nodes at the same diagonal level. I can implement this using a recursive approach.
 
 ## Approach
 
-- I created a function named `zigZagTraversal` that takes the root node of the binary tree as input and returns the zigzag traversal result as an ArrayList.
-- Initialize an ArrayList named `jawab` to store the zigzag traversal result.
-- Return an empty list if the root node is null, as there are no nodes to traverse.
-- Create a Queue named `q` to perform level order traversal of the binary tree.
-- Add the root node to the queue.
-- Initialize a boolean variable `leftToRight` to true, indicating the direction of traversal.
-- Iterate until the queue is empty :
-  - Get the size of the queue to determine the number of nodes at the current level.
-  - Create an ArrayList named `levelNodes` to store the nodes at the current level.
-  - Iterate over the nodes at the current level :
-    - Poll the node from the front of the queue.
-    - If the left child of the current node exists, add it to the queue.
-    - If the right child of the current node exists, add it to the queue.
-    - Add the value of the current node to the `levelNodes` list.
-  - If the traversal direction is from right to left, reverse the `levelNodes` list.
-  - Add all the nodes in the `levelNodes` list to the `jawab` list.
-  - Toggle the direction of traversal for the next level by negating the value of `leftToRight`.
-- Return the `jawab` list containing the zigzag traversal of the binary tree.
+- I initialize an ArrayList to store the diagonal sums.
+- Define a recursive function to calculate the diagonal sums.
+- In each recursive call, update the diagonal sum at the corresponding index in the ArrayList.
+- Traverse the tree recursively, moving to the right child and incrementing the diagonal level, and moving to the left child while keeping the diagonal level unchanged.
+- Return the ArrayList containing the diagonal sums.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -38,8 +25,9 @@ Keep Solving.:)
 ## Complexity
 - Time complexity : $O( n )$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$n$ :  number of nodes in the binary tree
-- Space complexity : $O( n )$
+$n$ :  number of nodes in the tree
+- Space complexity : $O( h )$
+$h$ : height of the tree
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -47,67 +35,65 @@ $n$ :  number of nodes in the binary tree
 ```
 //  User function Template for Java
 
-
-/*class Node
-{
+/*Complete the function below
+Node is as follows:
+class Node{
     int data;
     Node left,right;
-    Node(int d)
-    {
+    Node(int d){
         data=d;
         left=right=null;
     }
-}*/
-
-class GFG {
+}
+*/
+class Tree {
     
-    // Function to perform zigzag traversal of a binary tree
-    ArrayList<Integer> zigZagTraversal(Node rootNode) {
+    /**
+     * Calculates the diagonal sum of the binary tree.
+     * 
+     * @param root The root node of the binary tree.
+     * @return An ArrayList containing the diagonal sums.
+     */
+    public static ArrayList<Integer> diagonalSum(Node root) {
         
-        // List to store the zigzag traversal result
-        ArrayList<Integer> jawab = new ArrayList<>();
+        // Initialize an ArrayList to store the diagonal sums
+        ArrayList<Integer> diagonalSums = new ArrayList<>();
         
-        // Returning empty list if the root node is null
-        if (rootNode == null){
-            return jawab;
+        // Call the recursive function to calculate diagonal sums
+        calculateDiagonalSum(diagonalSums, root, 0);
+        
+        // Return the ArrayList containing diagonal sums
+        return diagonalSums;
+    }
+    
+    /**
+     * Recursive function to calculate diagonal sums of the binary tree.
+     * 
+     * @param diagonalSums The ArrayList to store diagonal sums.
+     * @param node The current node being processed.
+     * @param level The current diagonal level.
+     */
+    private static void calculateDiagonalSum(ArrayList<Integer> diagonalSums, Node node, int level) {
+        
+        // If the ArrayList size matches the current diagonal level,
+        // add the node's data to the sum, otherwise update the sum.
+        if (diagonalSums.size() == level) {
+            diagonalSums.add(node.data);
+        } else {
+            int sum = diagonalSums.get(level);
+            sum += node.data;
+            diagonalSums.set(level, sum);
         }
         
-        // Queue to perform level order traversal
-        Queue<Node> q = new LinkedList<>();
-        q.add(rootNode);
-        
-        // Flag to track the direction of traversal
-        boolean leftToRight = true;
-        
-        // Looping until the q is empty
-        while (!q.isEmpty()) {
-            int size = q.size();
-            ArrayList<Integer> levelNodes = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                Node current = q.poll();
-                if (current.left != null){
-                    q.add(current.left);
-                }
-                if (current.right != null){
-                    q.add(current.right);
-                }
-                levelNodes.add(current.data);
-            }
-            
-            // Reversing the level nodes if traversing from right to left
-            if (!leftToRight) {
-                Collections.reverse(levelNodes);
-            }
-            
-            // Adding the level nodes to the result list
-            jawab.addAll(levelNodes);
-            
-            // Toggling the direction for the next level
-            leftToRight = !(leftToRight);
+        // Recursively traverse the right child, maintaining the same level.
+        if (node.right != null) {
+            calculateDiagonalSum(diagonalSums, node.right, level);
         }
         
-        // Returning the zigzag traversal result
-        return jawab;
+        // Recursively traverse the left child, incrementing the level.
+        if (node.left != null) {
+            calculateDiagonalSum(diagonalSums, node.left, level + 1);
+        }
     }
 }
 ```
