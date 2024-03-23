@@ -2,20 +2,29 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 22-03-24 
+## Today's 23-03-24 
 
-## [Diagonal sum in binary tree](https://www.geeksforgeeks.org/problems/diagonal-sum-in-binary-tree/1)
+## [Fibonacci series up to Nth term](https://www.geeksforgeeks.org/problems/fibonacci-series-up-to-nth-term/1)
 
 ## Intuition
-To calculate the diagonal sum of a binary tree, I traverse the tree in a diagonal manner, adding the values of nodes at the same diagonal level. I can implement this using a recursive approach.
+- The Fibonacci series starts with 0 and 1, where each subsequent number is the sum of the two preceding ones.
+- To handle large Fibonacci numbers and prevent overflow, each Fibonacci number is computed modulo `1_000_000_007`.
 
 ## Approach
 
-- I initialize an ArrayList to store the diagonal sums.
-- Define a recursive function to calculate the diagonal sums.
-- In each recursive call, update the diagonal sum at the corresponding index in the ArrayList.
-- Traverse the tree recursively, moving to the right child and incrementing the diagonal level, and moving to the left child while keeping the diagonal level unchanged.
-- Return the ArrayList containing the diagonal sums.
+**Initialize Variables :** 
+- Create a static integer array `a[]` to store the Fibonacci series elements.
+- Allocate memory for `n + 1` elements in the array to accommodate the Fibonacci series up to the `n`th term.
+  
+**Base Cases :**
+- The first two terms of the Fibonacci series are `0` and `1`, which are stored at indices `0` and `1` of the array `a[]`.
+
+**Generate Fibonacci Series :**
+- Starting from index `2`, iterate through the array and compute each term by adding the previous two terms.
+- To prevent overflow, compute each Fibonacci number modulo `1_000_000_007`.
+
+**Return Result :**
+- After generating the Fibonacci series, return the array `a[]` containing the Fibonacci series with each number modulo `1_000_000_007`.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -25,9 +34,8 @@ Keep Solving.:)
 ## Complexity
 - Time complexity : $O( n )$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$n$ :  number of nodes in the tree
-- Space complexity : $O( h )$
-$h$ : height of the tree
+$n$ : given
+- Space complexity : $O( n )$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -35,65 +43,28 @@ $h$ : height of the tree
 ```
 //  User function Template for Java
 
-/*Complete the function below
-Node is as follows:
-class Node{
-    int data;
-    Node left,right;
-    Node(int d){
-        data=d;
-        left=right=null;
-    }
-}
-*/
-class Tree {
+class Solution {
+
+    static int a[]; // Static array to store Fibonacci series elements
     
-    /**
-     * Calculates the diagonal sum of the binary tree.
-     * 
-     * @param root The root node of the binary tree.
-     * @return An ArrayList containing the diagonal sums.
-     */
-    public static ArrayList<Integer> diagonalSum(Node root) {
+    // Method to generate Fibonacci series up to the nth term
+    int[] Series(int n) {
         
-        // Initialize an ArrayList to store the diagonal sums
-        ArrayList<Integer> diagonalSums = new ArrayList<>();
+        // Initializing the array to store Fibonacci series
+        a = new int[1 + n]; // Allocate memory for 'n' + 1 elements
         
-        // Call the recursive function to calculate diagonal sums
-        calculateDiagonalSum(diagonalSums, root, 0);
+        // Base cases for Fibonacci series
+        a[0] = 0; // First term is 0
+        a[1] = 1; // Second term is 1
         
-        // Return the ArrayList containing diagonal sums
-        return diagonalSums;
-    }
-    
-    /**
-     * Recursive function to calculate diagonal sums of the binary tree.
-     * 
-     * @param diagonalSums The ArrayList to store diagonal sums.
-     * @param node The current node being processed.
-     * @param level The current diagonal level.
-     */
-    private static void calculateDiagonalSum(ArrayList<Integer> diagonalSums, Node node, int level) {
-        
-        // If the ArrayList size matches the current diagonal level,
-        // add the node's data to the sum, otherwise update the sum.
-        if (diagonalSums.size() == level) {
-            diagonalSums.add(node.data);
-        } else {
-            int sum = diagonalSums.get(level);
-            sum += node.data;
-            diagonalSums.set(level, sum);
+        // Generating Fibonacci series
+        for (int i = 2; i < a.length; i++) {
+            // Computing each term by adding the previous two terms
+            // Taking modulus as said
+            a[i] = ( a[i - 1] + a[i - 2] ) % 1_000_000_007;
         }
         
-        // Recursively traverse the right child, maintaining the same level.
-        if (node.right != null) {
-            calculateDiagonalSum(diagonalSums, node.right, level);
-        }
-        
-        // Recursively traverse the left child, incrementing the level.
-        if (node.left != null) {
-            calculateDiagonalSum(diagonalSums, node.left, level + 1);
-        }
+        return a; // Returning the array containing Fibonacci series
     }
 }
 ```
