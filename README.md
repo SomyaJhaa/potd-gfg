@@ -1,30 +1,25 @@
+# Happy Holika Dahan! May the flames of this sacred fire ignite hope, love, and prosperity in your life. 🪔✨ #HolikaDahan
+
 ## GeeksForGeeks Problem Of The Day Solutions
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 23-03-24 
+## Today's 24-03-24 
 
-## [Fibonacci series up to Nth term](https://www.geeksforgeeks.org/problems/fibonacci-series-up-to-nth-term/1)
+## [Insert an Element at the Bottom of a Stack](https://www.geeksforgeeks.org/problems/insert-an-element-at-the-bottom-of-a-stack/1)
 
 ## Intuition
-- The Fibonacci series starts with 0 and 1, where each subsequent number is the sum of the two preceding ones.
-- To handle large Fibonacci numbers and prevent overflow, each Fibonacci number is computed modulo `1_000_000_007`.
+The intuition behind this method is to use an additional stack to reverse the order of elements in the original stack temporarily. This allows to insert the new element at the bottom of the stack efficiently.
 
 ## Approach
 
-**Initialize Variables :** 
-- Create a static integer array `a[]` to store the Fibonacci series elements.
-- Allocate memory for `n + 1` elements in the array to accommodate the Fibonacci series up to the `n`th term.
-  
-**Base Cases :**
-- The first two terms of the Fibonacci series are `0` and `1`, which are stored at indices `0` and `1` of the array `a[]`.
+- Created a temporary stack (`tempStack`) to hold elements temporarily.
+- Popped all elements from the original stack (`st`) and push them onto the temporary stack. This effectively reverses the order of elements in the original stack.
+- Pushed the new element (`x`) onto the original stack (`st`). This effectively inserts the new element at the bottom of the original stack.
+- Popped all elements from the temporary stack (`tempStack`) and push them back onto the original stack (`st`). This restores the original order of elements.
+- Returned the modified original stack (`st`) with the new element inserted at the bottom.
 
-**Generate Fibonacci Series :**
-- Starting from index `2`, iterate through the array and compute each term by adding the previous two terms.
-- To prevent overflow, compute each Fibonacci number modulo `1_000_000_007`.
-
-**Return Result :**
-- After generating the Fibonacci series, return the array `a[]` containing the Fibonacci series with each number modulo `1_000_000_007`.
+By following this approach, I can efficiently insert an element at the bottom of the stack while maintaining the order of other elements.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -34,7 +29,7 @@ Keep Solving.:)
 ## Complexity
 - Time complexity : $O( n )$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$n$ : given
+$n$ : number of elements in the stack
 - Space complexity : $O( n )$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
@@ -44,27 +39,28 @@ $n$ : given
 //  User function Template for Java
 
 class Solution {
-
-    static int a[]; // Static array to store Fibonacci series elements
     
-    // Method to generate Fibonacci series up to the nth term
-    int[] Series(int n) {
+    // Method to insert an element at the bottom of a stack
+    public Stack<Integer> insertAtBottom(Stack<Integer> st, int x) {
         
-        // Initializing the array to store Fibonacci series
-        a = new int[1 + n]; // Allocate memory for 'n' + 1 elements
+        // Creating a temporary stack to hold elements temporarily
+        Stack<Integer> tempStack = new Stack<>();
         
-        // Base cases for Fibonacci series
-        a[0] = 0; // First term is 0
-        a[1] = 1; // Second term is 1
-        
-        // Generating Fibonacci series
-        for (int i = 2; i < a.length; i++) {
-            // Computing each term by adding the previous two terms
-            // Taking modulus as said
-            a[i] = ( a[i - 1] + a[i - 2] ) % 1_000_000_007;
+        // Pushing all elements from the original stack to the temporary stack
+        while (!st.isEmpty()) {
+            tempStack.push(st.pop());
         }
         
-        return a; // Returning the array containing Fibonacci series
+        // Pushing the new element to the original stack, effectively inserting it at the bottom
+        st.push(x);
+        
+        // Popping all elements from the temporary stack and push them back to the original stack
+        while (!tempStack.isEmpty()) {
+            st.push(tempStack.pop());
+        }
+        
+        // Returning the modified original stack with the new element inserted at the bottom
+        return st;
     }
-}
+} 	
 ```
