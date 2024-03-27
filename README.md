@@ -1,28 +1,35 @@
-# 🎨🌈 Wishing You a Colorful Holi ! 🎉🎆
-## May your journey through the repository be as bright and joyful as the colors of Holi ! Happy Holi to all our viewers ! 🌺💫
-
 ## GeeksForGeeks Problem Of The Day Solutions
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 26-03-24 
+## Today's 27-03=24 
 
-## [Additive sequence](https://www.geeksforgeeks.org/problems/additive-sequence/1)
+## [Find shortest safe route in a matrix](https://www.geeksforgeeks.org/problems/find-shortest-safe-route-in-a-matrix/1)
 
 ## Intuition
-An additive sequence is a series of numbers in which each number in the sequence is the sum of the two preceding numbers. The idea behind the algorithm is to explore all possible combinations of the first two numbers in the sequence and then recursively check if the remaining string forms a valid additive sequence.
+The problem involves finding the shortest path from any cell with value 1 in the first column to any cell with value 1 in the last column, considering only cells with value 1 as passable and 0 as impassable. Landmines, represented by cells with value 0, block adjacent cells.
 
 ## Approach
 
-**Input Validation :** I checked if the length of the input string is less than or equal to 2. If so, return false as an additive sequence must contain at least three numbers.
-- **Initialization :** Initialized two static variables `jawab` (result) and `sequence` (to store the current sequence being checked).
-- **Recursion :** Defined a recursive function `checkAdditive` that takes the input string and the starting index as parameters.
-- **Base Case :** If the starting index equals the length of the input string and the size of the sequence is greater than 2, set the result to true.
-- **Updated Variables :** Updated variables `first`, `second`, and `current` based on the current state of the sequence.
-- **Iterated :** Iterated through the remaining characters in the input string starting from the current index.
-- **Backtracking :** Added the current number to the sequence if the sequence size is less than 2 and the result is not true. Recursively call the `checkAdditive` function with the updated parameters. Removed the current number from the sequence to backtrack and explore other possibilities.
-- **Checked Conditions :** Checked if the current number violates the additive property or if it satisfies the additive property. Return or continue accordingly.
-- **Result :** After exploring all possibilities, returned the final result.
+**Marked Landmines :**
+- I iterated through the grid.
+- For each cell with value 0 (landmine), marked adjacent cells as impassable by setting their value to -1.
+
+**Converted Marked Cells :**
+- Converted all marked cells (value -1) back to passable cells (value 0).
+
+**Breadth-First Search (BFS) :**
+   - Initialized a 2D array to store distances from the starting point.
+   - Initialized a queue for BFS traversal.
+   - Enqueued cells from the first column with value 1 and set their distance to 0.
+   - Performed BFS :
+     - Dequeued a cell and explore its neighboring cells.
+     - If a neighboring cell is valid, unvisited, and reachable, updated its distance and enqueue it.
+   - Continued BFS until all reachable cells are visited or the queue is empty.
+
+**Finded Shortest Path :**
+   - Finded the minimum distance from any cell in the last column with value 1 to the destination.
+   - If a destination cell cannot be reached, returned -1; otherwise, returned the minimum distance plus 1 as the shortest path length.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -30,10 +37,12 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O( N^2 )$
+- Time complexity : $O( r*c )$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$N$ : length of the input string
-- Space complexity : $O( N )$
+$r$ : number of rows
+
+$c$ : number of columns
+- Space complexity : $O( r*c )$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -43,77 +52,112 @@ $N$ : length of the input string
 
 class Solution {
     
-    // Static variables to store the result and the sequence being checked
-    static boolean jawab;
-    static ArrayList<Integer> sequence;
-
-    // Method to check if the given string forms an additive sequence
-    public boolean isAdditiveSequence(String n) {
+    // Inner class to represent a cell in the grid
+    static class Cell {
+        int row, col;
         
-        // Checking if the length of the input string is less than or equal to 2
-        if (n.length() <= 2) {
-            return false;
+        // Constructor to initialize row and column values of a cell
+        Cell(int r, int c) {
+            row = r;
+            col = c;
         }
-        
-        // Initializing the result and sequence
-        jawab = false;
-        sequence = new ArrayList<>();
-        
-        // Invoking the recursive method to check for additive sequence
-        checkAdditive(n, 0);
-        
-        // Returning the result
-        return jawab;
     }
-
-    // Recursive method to check for additive sequence
-    static void checkAdditive(String input, int startIndex) {
+    
+    // Static variables to store the number of rows and columns in the grid
+    static int ROWS;
+    static int COLS;
+    
+    // Arrays to store possible moves in rows and columns (up, left, right, down)
+    static int[] rowMoves = {-1, 0, 0, 1};
+    static int[] colMoves = {0, -1, 1, 0};
+    
+    // Method to check if a given cell is within the grid boundaries
+    static boolean isValid(int x, int y) {
+        return (x >= 0 && y >= 0 && x < ROWS && y < COLS);
+    }
+    
+    // Method to find the shortest path in the grid
+    static int findShortestPath(int[][] grid) {
+        ROWS = grid.length;
+        COLS = grid[0].length;
         
-        // If we have processed the entire string and the sequence contains more than 2 numbers, set the result to true
-        if (startIndex == input.length() && sequence.size() > 2) {
-            jawab = true;
-            return;
-        }
-
-        // Variables to store the first, second, and current numbers in the sequence
-        int first = 0, second = 0, current = 0;
-        
-        // If the sequence has at least 2 numbers, updating the first and second numbers
-        if (sequence.size() >= 2) {
-            second = sequence.get(sequence.size() - 1);
-            first = sequence.get(sequence.size() - 2);
-        }
-
-        // Iterating through the remaining characters in the string
-        for (int i = startIndex; i < input.length(); i++) {
-            
-            // Updating the current number by appending digits from the input string
-            current = current * 10 + (input.charAt(i) - '0');
-            
-            // If the sequence has less than 2 numbers and the result is not yet true, try adding the current number to the sequence
-            if (sequence.size() < 2 && !jawab) {
-                sequence.add(current);
-                // Recursively checking the rest of the string starting from the next index
-                checkAdditive(input, i + 1);
-                // Removing the current number from the sequence to backtrack
-                sequence.remove(sequence.size() - 1);
-            } 
-            
-            // If the current number is greater than the sum of the first and second numbers and the result is not yet true, return
-            else if (current > (first + second) && !jawab) {
-                return;
-            } 
-            
-            // If the current number is equal to the sum of the first and second numbers and the result is not yet true, try adding the current number to the sequence
-            else if (current == first + second && !jawab) {
-                sequence.add(current);
-                // Recursively checking the rest of the string starting from the next index
-                checkAdditive(input, i + 1);
-                // Removing the current number from the sequence to backtrack
-                sequence.remove(sequence.size() - 1);
+        // Marking adjacent cells of landmines as -1
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                if (grid[i][j] == 0) {
+                    for (int k = 0; k < 4; k++) {
+                        int nextRow = i + rowMoves[k];
+                        int nextCol = j + colMoves[k];
+                        if (isValid(nextRow, nextCol))
+                            grid[nextRow][nextCol] = -1;
+                    }
+                }
             }
         }
-        return;
+        
+        // Converting -1 cells back to 0
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                if (grid[i][j] == -1)
+                    grid[i][j] = 0;
+            }
+        }
+        
+        // Initializing a 2D array to store distances from the starting point
+        int[][] distance = new int[ROWS][COLS];
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++)
+                distance[i][j] = -1;
+        }
+        
+        // Initializing a queue for BFS traversal
+        Queue<Cell> queue = new LinkedList<>();
+        
+        // Adding cells from the first column with value 1 to the queue and set their distance to 0
+        for (int i = 0; i < ROWS; i++) {
+            if (grid[i][0] == 1) {
+                queue.add(new Cell(i, 0));
+                distance[i][0] = 0;
+            }
+        }
+        
+        // Performing BFS to find shortest path
+        while (!queue.isEmpty()) {
+            Cell current = queue.poll();
+            int d = distance[current.row][current.col];
+            int x = current.row;
+            int y = current.col;
+            
+            // Exploring neighboring cells
+            for (int k = 0; k < 4; k++) {
+                int newX = x + rowMoves[k];
+                int newY = y + colMoves[k];
+                
+                // Checking if the neighboring cell is valid, unvisited, and reachable
+                if (isValid(newX, newY) && distance[newX][newY] == -1 && grid[newX][newY] == 1) {
+                  
+                    // Updating distance and add the cell to the queue
+                    distance[newX][newY] = d + 1;
+                    queue.add(new Cell(newX, newY));
+                }
+            }
+        }
+        
+        // Finding minimum distance to reach the last column
+        int minDistance = Integer.MAX_VALUE;
+        for (int i = 0; i < ROWS; i++) {
+            if (grid[i][COLS - 1] == 1 && distance[i][COLS - 1] != -1) {
+                minDistance = Math.min(minDistance, distance[i][COLS - 1]);
+            }
+        }
+        
+        // If destination cannot be reached, return -1; otherwise, returning the minimum distance plus 1
+        if (minDistance == Integer.MAX_VALUE){
+            return -1;
+        } 
+        else {
+            return minDistance + 1;
+        }
     }
-}	
+}
 ```
