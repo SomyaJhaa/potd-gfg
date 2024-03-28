@@ -2,34 +2,30 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 27-03=24 
+## Today's 28-03-24 
 
-## [Find shortest safe route in a matrix](https://www.geeksforgeeks.org/problems/find-shortest-safe-route-in-a-matrix/1)
+## [City With the Smallest Number of Neighbors at a Threshold Distance](https://www.geeksforgeeks.org/problems/city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/1)
 
 ## Intuition
-The problem involves finding the shortest path from any cell with value 1 in the first column to any cell with value 1 in the last column, considering only cells with value 1 as passable and 0 as impassable. Landmines, represented by cells with value 0, block adjacent cells.
+My algorithm should aim to find the city that minimizes the number of reachable cities within a given distance threshold. It accomplishes this by using the Floyd-Warshall algorithm to compute all shortest paths between cities, then iterates through each city to count the number of reachable cities within the threshold.
 
 ## Approach
 
-**Marked Landmines :**
-- I iterated through the grid.
-- For each cell with value 0 (landmine), marked adjacent cells as impassable by setting their value to -1.
+**Initialization** :
+   - Initialized an adjacency matrix to represent distances between cities, setting all distances to infinity except self-distances, which are set to 0.
 
-**Converted Marked Cells :**
-- Converted all marked cells (value -1) back to passable cells (value 0).
+**Populated Adjacency Matrix** :
+   - Populated the adjacency matrix with distances from the given edges.
 
-**Breadth-First Search (BFS) :**
-   - Initialized a 2D array to store distances from the starting point.
-   - Initialized a queue for BFS traversal.
-   - Enqueued cells from the first column with value 1 and set their distance to 0.
-   - Performed BFS :
-     - Dequeued a cell and explore its neighboring cells.
-     - If a neighboring cell is valid, unvisited, and reachable, updated its distance and enqueue it.
-   - Continued BFS until all reachable cells are visited or the queue is empty.
+**Floyd-Warshall Algorithm** :
+   - Applied the Floyd-Warshall algorithm to compute all shortest paths between cities.
 
-**Finded Shortest Path :**
-   - Finded the minimum distance from any cell in the last column with value 1 to the destination.
-   - If a destination cell cannot be reached, returned -1; otherwise, returned the minimum distance plus 1 as the shortest path length.
+**Finded Optimal City** :
+   - Iterated through each city and count the number of reachable cities within the distance threshold.
+   - Updated the optimal city if a city with fewer reachable cities is found.
+
+**Result** :
+   - Returned the index of the optimal city found.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -37,12 +33,9 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O( r*c )$
+- Time complexity : $O(numOfCities^3)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$r$ : number of rows
-
-$c$ : number of columns
-- Space complexity : $O( r*c )$
+- Space complexity : $O(numOfCities^2)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -52,112 +45,57 @@ $c$ : number of columns
 
 class Solution {
     
-    // Inner class to represent a cell in the grid
-    static class Cell {
-        int row, col;
+    // Method to find the city with the minimum number of reachable cities within the distance threshold
+    public int findCity(int numOfCities, int numOfEdges, int[][] edges, int distanceThreshold) {
+      
+        // Initializing the adjacency matrix to represent distances between cities
+        int[][] adjacencyMatrix = new int[numOfCities][numOfCities];
         
-        // Constructor to initialize row and column values of a cell
-        Cell(int r, int c) {
-            row = r;
-            col = c;
+        // Initializing all distances to infinity (Integer.MAX_VALUE/2 to avoid overflow) and set distances to self as 0
+        for (int[] row : adjacencyMatrix) {
+            Arrays.fill(row, Integer.MAX_VALUE / 2);
         }
-    }
-    
-    // Static variables to store the number of rows and columns in the grid
-    static int ROWS;
-    static int COLS;
-    
-    // Arrays to store possible moves in rows and columns (up, left, right, down)
-    static int[] rowMoves = {-1, 0, 0, 1};
-    static int[] colMoves = {0, -1, 1, 0};
-    
-    // Method to check if a given cell is within the grid boundaries
-    static boolean isValid(int x, int y) {
-        return (x >= 0 && y >= 0 && x < ROWS && y < COLS);
-    }
-    
-    // Method to find the shortest path in the grid
-    static int findShortestPath(int[][] grid) {
-        ROWS = grid.length;
-        COLS = grid[0].length;
+        for (int i = 0; i < numOfCities; i++) {
+            adjacencyMatrix[i][i] = 0;
+        }
         
-        // Marking adjacent cells of landmines as -1
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                if (grid[i][j] == 0) {
-                    for (int k = 0; k < 4; k++) {
-                        int nextRow = i + rowMoves[k];
-                        int nextCol = j + colMoves[k];
-                        if (isValid(nextRow, nextCol))
-                            grid[nextRow][nextCol] = -1;
-                    }
+        // Populating the adjacency matrix with distances from given edges
+        for (int[] edge : edges) {
+            int city1 = edge[0];
+            int city2 = edge[1];
+            int distance = edge[2];
+            adjacencyMatrix[city1][city2] = adjacencyMatrix[city2][city1] = distance;
+        }
+        
+        // Applying Floyd-Warshall algorithm to find all shortest paths
+        for (int k = 0; k < numOfCities; k++) {
+            for (int i = 0; i < numOfCities; i++) {
+                for (int j = 0; j < numOfCities; j++) {
+                    adjacencyMatrix[i][j] = Math.min(adjacencyMatrix[i][j], adjacencyMatrix[i][k] + adjacencyMatrix[k][j]);
                 }
             }
         }
         
-        // Converting -1 cells back to 0
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                if (grid[i][j] == -1)
-                    grid[i][j] = 0;
-            }
-        }
-        
-        // Initializing a 2D array to store distances from the starting point
-        int[][] distance = new int[ROWS][COLS];
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++)
-                distance[i][j] = -1;
-        }
-        
-        // Initializing a queue for BFS traversal
-        Queue<Cell> queue = new LinkedList<>();
-        
-        // Adding cells from the first column with value 1 to the queue and set their distance to 0
-        for (int i = 0; i < ROWS; i++) {
-            if (grid[i][0] == 1) {
-                queue.add(new Cell(i, 0));
-                distance[i][0] = 0;
-            }
-        }
-        
-        // Performing BFS to find shortest path
-        while (!queue.isEmpty()) {
-            Cell current = queue.poll();
-            int d = distance[current.row][current.col];
-            int x = current.row;
-            int y = current.col;
-            
-            // Exploring neighboring cells
-            for (int k = 0; k < 4; k++) {
-                int newX = x + rowMoves[k];
-                int newY = y + colMoves[k];
-                
-                // Checking if the neighboring cell is valid, unvisited, and reachable
-                if (isValid(newX, newY) && distance[newX][newY] == -1 && grid[newX][newY] == 1) {
-                  
-                    // Updating distance and add the cell to the queue
-                    distance[newX][newY] = d + 1;
-                    queue.add(new Cell(newX, newY));
+        // Finding the city with the minimum number of reachable cities within the distance threshold
+        int minReachableCities = numOfCities + 1;
+        int optimalCity = -1;
+        for (int i = 0; i < numOfCities; i++) {
+            int reachableCitiesCount = 0;
+            // Counting reachable cities for each city
+            for (int j = 0; j < numOfCities; j++) {
+                if (adjacencyMatrix[i][j] <= distanceThreshold) {
+                    reachableCitiesCount++;
                 }
             }
-        }
-        
-        // Finding minimum distance to reach the last column
-        int minDistance = Integer.MAX_VALUE;
-        for (int i = 0; i < ROWS; i++) {
-            if (grid[i][COLS - 1] == 1 && distance[i][COLS - 1] != -1) {
-                minDistance = Math.min(minDistance, distance[i][COLS - 1]);
+            // Updating optimal city if found with fewer reachable cities
+            if (reachableCitiesCount <= minReachableCities) {
+                minReachableCities = reachableCitiesCount;
+                optimalCity = i;
             }
         }
         
-        // If destination cannot be reached, return -1; otherwise, returning the minimum distance plus 1
-        if (minDistance == Integer.MAX_VALUE){
-            return -1;
-        } 
-        else {
-            return minDistance + 1;
-        }
+        // Returning the optimal city
+        return optimalCity;
     }
-}
+}      
 ```
