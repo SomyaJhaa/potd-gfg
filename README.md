@@ -2,18 +2,19 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 30-03-24 
+## Today's 31-03-24 
 
-## [Minimum element in BST](https://www.geeksforgeeks.org/problems/minimum-element-in-bst/1)
+## [Closest Neighbour in BST](https://www.geeksforgeeks.org/problems/closest-neighbor-in-bst/1)
 
 ## Intuition
-In a Binary Search Tree (BST), the minimum valued element is always located at the leftmost node. Therefore, to find the minimum element, I need to traverse the BST towards the left child recursively until I reach a node with no left child. That node will contain the minimum value in the BST.
+I utilized the properties of a binary search tree (BST) to efficiently find the greatest number less than or equal to the target value.
 
 ## Approach
-
-- I started at the root node.
-- While the left child of the current node is not null, moved to the left child.
-- Returned the value of the current node when there are no more left children.
+- Started with the root node of the BST.
+- Traversed down the BST, comparing node values with the target value.
+- Updated the maximum value found so far if a node's value is less than or equal to the target.
+- Continued traversal until reaching a leaf node or a node with no valid children.
+- Returned the maximum value found, representing the greatest number in the BST less than or equal to the target.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -25,7 +26,7 @@ Keep Solving.:)
 <!-- Add your time complexity here, e.g. $$O())$$ -->
 $h$ : height of the tree
 
-In the worst-case scenario, the tree is skewed, and the height h is equal to the number of nodes in the tree. Therefore, the time complexity is $O(N)$, where N is the number of nodes in the tree
+However, in the average case, when the tree is balanced, the time complexity is $O(log n)$, where $n$ is the number of nodes in the BST.
 - Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
@@ -34,35 +35,45 @@ In the worst-case scenario, the tree is skewed, and the height h is equal to the
 ```
 //  User function Template for Java
 
-/*
-class Node {
-    int data;
-    Node left;
-    Node right;
-    Node(int data) {
-        this.data = data;
-        left = null;
-        right = null;
+/*class Node
+{
+    int key;
+    Node left, right;
+
+    Node(int x)
+    {
+        key = x;
+        left = right = null;
+    }
+
+}*/
+
+class Solution {
+
+    // Function to find the greatest number in the binary search tree (BST) 
+    // that is less than or equal to n.
+
+    public static int findMaxForN(Node root, int n) {
+        
+        // Initializing the maximum value found so far
+        int maxVal = Integer.MIN_VALUE;
+        
+        // Traversing down the BST until reaching a leaf node or a node with no valid children
+        while (root != null) {
+            // If the current node's value is less than or equal to n
+            if (root.key <= n) {
+                // Updating maxVal if the current node's value is greater than the current maxVal
+                maxVal = Math.max(maxVal, root.key);
+                // Moving to the right subtree to potentially find a greater value
+                root = root.right;
+            } else {
+                // If the current node's value is greater than n, moving to the left subtree
+                root = root.left;
+            }
+        }
+        
+        // If maxVal remains the default value, returning -1 indicating no valid value found
+        return maxVal == Integer.MIN_VALUE ? -1 : maxVal;
     }
 }
-*/
-class Solution {
-    // Function to find the minimum element in the given BST.
-    int minValue(Node root) {
-        // code here
-        
-        // Base case: if root is null, return -1 or throw an error indicating that the tree is empty.
-        if (root == null) {
-            return -1;
-        }
-        
-        // Traverse towards the leftmost node
-        while (root.left != null) {
-            root = root.left;
-        }
-        
-        // Return the value of the leftmost node
-        return root.data;
-    }
-}   
 ```
