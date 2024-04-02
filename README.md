@@ -2,81 +2,103 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 01-04-24 
+## Today's 03-04-24 
 
-## [Pairs violating the BST property](https://www.geeksforgeeks.org/problems/pairs-violating-bst-property--212515/1)
+## [Kth common ancestor in BST](https://www.geeksforgeeks.org/problems/kth-common-ancestor-in-bst/1)
 
-**Intuition:**
-The problem asks to find the number of pairs violating the properties of a Binary Search Tree (BST). To solve this, we can perform an in-order traversal of the BST to obtain a sorted array of its elements. Then, we count the number of inversions in this sorted array, which corresponds to the number of pairs violating the BST property.
+## Intuition
+-  Given a Binary Search Tree (BST) with n (n >= 2) nodes, I aim to find the kth common ancestor of nodes x and y.
+- The common ancestor of two nodes x and y is a node that is an ancestor of both x and y.
+- To find the kth common ancestor, I first find the Lowest Common Ancestor (LCA) of nodes x and y in the BST.
+- Then, I traverse the path from the LCA to the root and identify the kth node in this path.
 
-**Approach:**
-1. Perform an in-order traversal of the BST to obtain a sorted array of its elements.
-2. Use a merge sort algorithm to count the number of inversions in the sorted array.
-3. During the merge step of the merge sort, count the inversions by comparing elements of the two halves.
-4. Whenever an element from the left half is greater than an element from the right half, increment the count by the number of elements remaining in the left half, as they all will form inversions with the current element.
-5. Sort the elements while merging the two halves.
-6. Return the count of inversions as the result.
+## Approach
+- Finded the Lowest Common Ancestor (LCA) of nodes x and y in the BST.
+   - Start from the root node.
+   - If both x and y are less than the current node's value, move to the left subtree.
+   - If both x and y are greater than the current node's value, move to the right subtree.
+   - If x and y are on different sides of the current node's value, the current node is the LCA.
+- Finded the path from the root to the LCA.
+   - Started from the root and traverse towards the LCA.
+   - While traversing, keep track of the nodes visited in an ArrayList.
+- Reversed the path ArrayList to traverse from the LCA towards the root.
+- Returned the kth element in the reversed path ArrayList as the kth common ancestor.
+   - If the path length is less than k, return -1 as the kth ancestor does not exist.
 
-**Time Complexity:**
-Let \( n \) be the number of nodes in the BST. In the worst case, both the in-order traversal and merge sort take \( O(n \log n) \) time. Thus, the overall time complexity of the algorithm is \( O(n \log n) \).
+---
+Have a look at the code , still have any confusion then please let me know in the comments
 
-**Space Complexity:**
-The space complexity is \( O(n) \), where \( n \) is the number of nodes in the BST. This space is used to store the sorted array obtained from the in-order traversal of the BST. Additionally, there is recursion involved in the merge sort algorithm, which contributes to the stack space, but since the maximum depth of recursion is \( O(\log n) \) in the average case, the overall space complexity is still \( O(n) \).
+Keep Solving.:)
 
+## Complexity
+- Time complexity : $O(h)$
+<!-- Add your time complexity here, e.g. $$O())$$ -->
+$h$ : height of the binary tree
+
+- Space complexity : $O(h)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
 
 ```
+//  User function Template for Java
+
 class Solution {
-  public:
-
-    /*You are required to complete below function */
-    void merge(vector<int>& arr, int low, int mid, int high, int& count) {
-        int i = low, j = mid + 1;
-
-        while (i <= mid && j <= high) {
-            if (arr[i] > arr[j]) {
-                // If element at index i is greater than element at index j,
-                // then all elements from i to mid will violate the BST property with element at index j
-                count += (mid - i + 1);
-                j++;
-            } else {
-                i++;
-            }
-        }
-
-        // Sort the elements while merging
-        sort(arr.begin() + low, arr.begin() + high + 1);
-    }
-
-    void mergeSortAndCount(vector<int>& arr, int low, int high, int& count) {
-        if (low < high) {
-            int mid = (low + high) / 2;
-            mergeSortAndCount(arr, low, mid, count);
-            mergeSortAndCount(arr, mid + 1, high, count);
-            merge(arr, low, mid, high, count);
-        }
-    }
-
-    int pairsViolatingBST(int n, Node *root) {
-        vector<int> inorder;
-        inOrderTraversal(root, inorder);
-
-        int count = 0;
-        mergeSortAndCount(inorder, 0, inorder.size() - 1, count);
+    
+    // Function to find the kth common ancestor of nodes x and y
+    public int kthCommonAncestor(Node root, int k, int x, int y) {
         
-        return count;
+        // Finding the Lowest Common Ancestor (LCA) of nodes x and y
+        Node lca = findLowestCommonAncestor(root, x, y);
+        
+        // ArrayList to store the path from the root to the LCA
+        ArrayList<Integer> path = new ArrayList<>();
+        
+        // Finding the path from the root to the LCA
+        findPathToNode(root, lca, path);
+        
+        // Reversing the path array to traverse from the LCA towards the root
+        Collections.reverse(path);
+
+        // If the path length is less than k, kth ancestor does not exist
+        if (path.size() < k) return -1;
+
+        // Returning the kth ancestor from the reversed path array
+        return path.get(k - 1);
+    }
+    
+    
+    // Function to find the Lowest Common Ancestor (LCA) of nodes x and y
+    Node findLowestCommonAncestor(Node root, int x, int y) {
+        if (root == null) return null;
+
+        // If both x and y are less than the current node's value, then the LCA lies in the left subtree
+        if (x < root.data && y < root.data) return findLowestCommonAncestor(root.left, x, y);
+
+        // If both x and y are greater than the current node's value, then the LCA lies in the right subtree
+        if (x > root.data && y > root.data) return findLowestCommonAncestor(root.right, x, y);
+
+        // If x and y are on different sides of the current node's value, then the current node is the LCA
+        return root;
     }
 
-private:
-    void inOrderTraversal(Node* root, vector<int>& inorder) {
-        if (root == nullptr)
+    // Function to find the path from the root to a specific node
+    void findPathToNode(Node root, Node node, ArrayList<Integer> path) {
+        path.add(root.data);
+        
+        // If the current node's value matches the target node's value, we have found the path
+        if (root.data == node.data){
             return;
-        
-        inOrderTraversal(root->left, inorder);
-        inorder.push_back(root->data);
-        inOrderTraversal(root->right, inorder);
+        }
+        // If the target node's value is greater than the current node's value, continue searching in the right subtree
+        else if (node.data > root.data){
+            findPathToNode(root.right, node, path);
+        }
+        // If the target node's value is less than the current node's value, continue searching in the left subtree
+        else{
+            findPathToNode(root.left, node, path);
+        }
     }
-};
 
+}
 ```
