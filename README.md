@@ -2,53 +2,65 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 04-04-24 
+## Today's 05-04-24 
 
-## [Sum of all substrings of a number](https://www.geeksforgeeks.org/problems/sum-of-all-substrings-of-a-number-1587115621/1)
+## [Strictly Increasing Array](https://www.geeksforgeeks.org/problems/convert-to-strictly-increasing-array3351/1)
 
-**Intuition:**
-To find the sum of all possible substrings of the given string, we can consider each digit of the string individually and calculate the contribution of that digit to the overall sum. The contribution of each digit depends on its position within the string and its value. We can use some mathematical observations to efficiently calculate this contribution for each digit.
+## Intuition
+The problem aims to find the minimum number of operations required to make an array strictly increasing. To solve the problem, I can use dynamic programming.
 
-**Approach:**
-1. Initialize the answer `ans` to 0.
-2. Iterate through each character `i` in the string `s`.
-3. Convert the character `i` to its corresponding integer value `x`.
-4. Calculate the contribution of the current digit to the overall sum. This contribution is `(x * c + 10 * prev) % mod`, where `c` represents the position of the current digit within the string (1-indexed) and `prev` represents the contribution of the previous digit.
-5. Update the answer `ans` by adding the contribution of the current digit modulo `mod`.
-6. Update the value of `prev` to the contribution of the current digit.
-7. Increment the value of `c` for the next iteration.
-8. Return the final answer `ans` modulo `mod`.
+## Approach
+- I iterated through the array and for each element, we determine the length of the longest increasing subsequence ending at that element.
+- I initialized a dynamic programming array 'dp' with all elements set to 1, indicating that initially each element forms a subsequence of length 1.
+- I iterated over each element of the array:
+  - For each element 'nums[i]', I iterate over the elements before it ('nums[j]' where 'j' ranges from 0 to 'i - 1').
+  - If 'nums[i] > nums[j]' and the difference between 'nums[i]' and 'nums[j]' is greater than or equal to the difference in indices ('i - j'), it means I can include 'nums[i]' in the increasing subsequence ending at 'nums[i]'.
+  - I updated the length of the longest increasing subsequence ending at 'nums[i]' by taking the maximum of the current value and '1 + dp[j]'.
+  - I also updated a variable 'maxIncreasingLength' to keep track of the maximum increasing subsequence length encountered so far.
+- Finally, I returned the difference between the length of the array and 'maxIncreasingLength', which represents the minimum number of operations required to make the array strictly increasing.
 
-**Time Complexity:**
-The time complexity of this approach is O(|s|), where |s| is the length of the input string `s`. This is because we iterate through each character of the string once.
+---
+Have a look at the code , still have any confusion then please let me know in the comments
 
-**Space Complexity:**
-The space complexity of this approach is O(1) because we are using only a constant amount of extra space regardless of the size of the input string. We only store a few variables to keep track of the current state of the calculation.
+Keep Solving.:)
 
+## Complexity
+- Time complexity : $O(n^2)$
+<!-- Add your time complexity here, e.g. $$O())$$ -->
+$n$ : length of the input array `nums`
+
+- Space complexity : $O(n)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
 
 ```
-class Solution
-{
-    public:
-    //Function to find sum of all possible substrings of the given string.
-    long long sumSubstrings(string s){
+//  User function Template for Java
+
+class Solution {
+    
+    public int min_operations(int[] nums) {
+        // Code here
+        int length = nums.length;
+        int maxIncreasingLength = 1;
+        int[] dp = new int[length];
         
-        // your code here
-        long long ans=0;
-        int mod=1e9+7;
-        long long prev=0;
-        int c=1;
-        for(auto i:s){
-            int x=i-'0';
-            int t=(x*c +10*prev)%mod;
-            ans=(ans+t)%mod;
-            prev=t;
-            c++;
+        // Initializing the dynamic programming array with 1s.
+        for (int i = 0; i < length; i++)
+            dp[i] = 1;
+        
+        // Performing dynamic programming to find the length of the longest increasing subsequence.
+        for (int i = 1; i < length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j] && (nums[i] - nums[j] >= (i - j))) {
+                    dp[i] = Math.max(1 + dp[j], dp[i]);
+                    maxIncreasingLength = Math.max(maxIncreasingLength, dp[i]);
+                }
+            }
         }
-        return ans;
-    }
-};        
         
+        // Returning the minimum number of operations required to make the array strictly increasing.
+        return length - maxIncreasingLength;
+    }
+}
 ```
