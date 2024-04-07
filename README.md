@@ -2,22 +2,21 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 06-04-24 
+## Today's 07-04-24
 
-## [Count ways to N'th Stair](https://www.geeksforgeeks.org/problems/count-ways-to-nth-stairorder-does-not-matter1322/1)
+## [Maximize dot product](https://www.geeksforgeeks.org/problems/maximize-dot-product2649/1)
 
 ## Intuition
-The `countWays` function calculates the number of ways to reach the nth stair when the order doesn't matter.
+Given two arrays `a` and `b`, I aim to maximize the dot product by inserting zeros in array `b`, while preserving the order of elements from both arrays.
 
 ## Approach
 
-**Base Case** : If there's only one stair or none, there's only one way to reach it.
+I solve this using Dynamic Programming :
 
-- For each additional stair :
-   - I can either take one step.
-   - Or skip the stair if `n` is even (since order doesn't matter).
-
-- Thus, the total ways to reach the nth stair is `(n / 2) + 1`.
+- I initialized a 2D array `dp` to store maximum dot products.
+- Iterated through arrays `a` and `b`.
+- Calculated dot products at each index pair and update `dp` accordingly.
+- Returned `dp[m][n]`, representing the maximum dot product.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -25,10 +24,12 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(1)$
+- Time complexity : $O(n*m)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
+$n$ : given
 
-- Space complexity : $O(1)$
+$m$ : given
+- Space complexity : $O(n*m)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -36,23 +37,29 @@ Keep Solving.:)
 ```
 //  User function Template for Java
 
-class Solution {
-
-    // Function to count the number of ways to reach the nth stair
-    // when the order does not matter.
-
-    Long countWays(int n) {
-
-        // Base case: if there is only one stair or no stair, there is only one way to reach it.
-        long ways = 1;
-
-        // For each stair, I can either take one step or skip it (if n is even).
-        // So, the number of ways to reach the nth stair is (n/2) + 1.
-        // I add 1 to account for the possibility of not taking any steps.
-        ways += (n / 2);
-
-        // Returning the total number of ways.
-        return ways;
-    }
+class Solution{
+    
+	public int maxDotProduct(int n, int m, int a[], int b[]) { 
+		// Your code goes here
+	
+		 // Initializing a 2D array to store the maximum dot product
+                 int[][] gp = new int[m + 1][n + 1];
+        
+                 // Initializing the array with zeros
+                 for (int[] row : gp) {
+                     Arrays.fill(row, 0);
+                 }
+        
+                 // Dynamic programming approach to calculate the maximum dot product
+                 for (int i = 1; i <= m; i++) {
+                     for (int j = i; j <= n; j++) {
+                     // Calculating the current dot product and update the cell
+                     gp[i][j] = Math.max(gp[i - 1][j - 1] + a[j - 1] * b[i - 1], gp[i][j - 1]);
+                     }
+                 }
+        
+                // Returning the maximum dot product
+                return gp[m][n];
+	} 
 }
 ```
