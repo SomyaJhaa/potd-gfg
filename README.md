@@ -2,21 +2,27 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 07-04-24
+## Today's 08-04-24
 
-## [Maximize dot product](https://www.geeksforgeeks.org/problems/maximize-dot-product2649/1)
+## [Optimal Strategy For A Game](https://www.geeksforgeeks.org/problems/optimal-strategy-for-a-game-1587115620/1)
 
 ## Intuition
-Given two arrays `a` and `b`, I aim to maximize the dot product by inserting zeros in array `b`, while preserving the order of elements from both arrays.
+The task is to maximize the amount of money obtained by selecting coins optimally from the given array. This problem can be efficiently solved using dynamic programming.
 
 ## Approach
 
-I solve this using Dynamic Programming :
+**Initialization** : 
+- Initialize an array `a` with the given coin values.
+- Initialize a memoization table `gp` to store computed values.
 
-- I initialized a 2D array `dp` to store maximum dot products.
-- Iterated through arrays `a` and `b`.
-- Calculated dot products at each index pair and update `dp` accordingly.
-- Returned `dp[m][n]`, representing the maximum dot product.
+**Recursive Function** (`helper`) :
+- Defined a function to recursively compute the maximum amount.
+- Base case : Returned 0 if left pointer exceeds right pointer or if the value is already computed.
+- Recursive Step : Computed the maximum amount by selecting coins optimally.
+
+**Main Function** (`countMaximum`) :
+- Initialized variables and called the recursive function with initial parameters.
+- Returned the computed result.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -24,12 +30,10 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(n*m)$
+- Time complexity : $O(c^2)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$n$ : given
-
-$m$ : given
-- Space complexity : $O(n*m)$
+$c$ : number of coins
+- Space complexity : $O(c^2)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -37,29 +41,47 @@ $m$ : given
 ```
 //  User function Template for Java
 
-class Solution{
+class solve {
     
-	public int maxDotProduct(int n, int m, int a[], int b[]) { 
-		// Your code goes here
-	
-		 // Initializing a 2D array to store the maximum dot product
-                 int[][] gp = new int[m + 1][n + 1];
+    static int[] a;
+    static long gp[][];
+    
+    //Function to find the maximum possible amount of money we can win
+    static long countMaximum(int n, int[] arr) {
+       
+        // Your code here
+     
+        // Assigning the array and initializing the memoization table
+        a = arr;
+        gp = new long[n][n];
         
-                 // Initializing the array with zeros
-                 for (int[] row : gp) {
-                     Arrays.fill(row, 0);
-                 }
+        // Filling the memoization table with -1 to indicate not yet computed values
+        for (long[] row : gp) {
+            Arrays.fill(row, -1);
+        }
         
-                 // Dynamic programming approach to calculate the maximum dot product
-                 for (int i = 1; i <= m; i++) {
-                     for (int j = i; j <= n; j++) {
-                     // Calculating the current dot product and update the cell
-                     gp[i][j] = Math.max(gp[i - 1][j - 1] + a[j - 1] * b[i - 1], gp[i][j - 1]);
-                     }
-                 }
+        // Calling the recursive helper function to find the maximum amount
+        return helper(0, n - 1);
+    }
+
+    // Recursive helper function to find the maximum amount by choosing coins optimally
+    static long helper(int l, int r) {
+        // Base case: when left pointer exceeds the right pointer, returning 0
+        if (l > r){
+            return 0;
+        }
         
-                // Returning the maximum dot product
-                return gp[m][n];
-	} 
+        // If the value for the current range [l, r] is already computed, returning it
+        if (gp[l][r] != -1){
+            return gp[l][r];
+        } 
+        
+        // Calculating the maximum amount by choosing coins optimally
+        gp[l][r] = Math.max(a[l] + Math.min(helper(l + 2, r), helper(l + 1, r - 1)),
+                            a[r] + Math.min(helper(l, r - 2), helper(l + 1, r - 1)));
+        
+        return gp[l][r];
+    }
+
 }
 ```
