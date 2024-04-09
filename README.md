@@ -2,27 +2,20 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 08-04-24
+## Today's 09-04-24
 
-## [Optimal Strategy For A Game](https://www.geeksforgeeks.org/problems/optimal-strategy-for-a-game-1587115620/1)
+## [Minimum Points To Reach Destination](https://www.geeksforgeeks.org/problems/minimum-points-to-reach-destination0540/1)
 
 ## Intuition
-The task is to maximize the amount of money obtained by selecting coins optimally from the given array. This problem can be efficiently solved using dynamic programming.
+The problem requires finding the minimum points needed to traverse a grid from top-left to bottom-right, where each cell has positive or negative points. I need to ensure that the accumulated points never drop below 1 during traversal.
 
 ## Approach
 
-**Initialization** : 
-- Initialize an array `a` with the given coin values.
-- Initialize a memoization table `gp` to store computed values.
-
-**Recursive Function** (`helper`) :
-- Defined a function to recursively compute the maximum amount.
-- Base case : Returned 0 if left pointer exceeds right pointer or if the value is already computed.
-- Recursive Step : Computed the maximum amount by selecting coins optimally.
-
-**Main Function** (`countMaximum`) :
-- Initialized variables and called the recursive function with initial parameters.
-- Returned the computed result.
+I used Dynamic Programming with Memoization.
+- Started from the bottom-right corner and recursively explore paths towards the top-left corner.
+- Kept track of the minimum points required at each cell.
+- Memoized computed results to avoid redundant computations.
+- Returned the minimum points required to reach the bottom-right corner.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -30,10 +23,12 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(c^2)$
+- Time complexity : $O(n*m)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$c$ : number of coins
-- Space complexity : $O(c^2)$
+$n$ : number of rows (given)
+
+$m$ : number of columns (given)
+- Space complexity : $O(n*m)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 ## Code
@@ -41,47 +36,57 @@ $c$ : number of coins
 ```
 //  User function Template for Java
 
-class solve {
+class Solution {
     
-    static int[] a;
-    static long gp[][];
-    
-    //Function to find the maximum possible amount of money we can win
-    static long countMaximum(int n, int[] arr) {
-       
-        // Your code here
-     
-        // Assigning the array and initializing the memoization table
-        a = arr;
-        gp = new long[n][n];
+    // Method to calculate the minimum points required
+    public int minPoints(int[][] pointsArray, int numRows, int numCols) {
         
-        // Filling the memoization table with -1 to indicate not yet computed values
-        for (long[] row : gp) {
-            Arrays.fill(row, -1);
+        // Memoization array to store already computed results
+        int[][] memo = new int[numRows][numCols];
+        for (int[] row : memo) {
+            Arrays.fill(row, Integer.MIN_VALUE);
         }
         
-        // Calling the recursive helper function to find the maximum amount
-        return helper(0, n - 1);
+        // Call the recursive DFS method to compute minimum points
+        return calculateDFS(0, 0, pointsArray, numRows, numCols, memo);
     }
 
-    // Recursive helper function to find the maximum amount by choosing coins optimally
-    static long helper(int l, int r) {
-        // Base case: when left pointer exceeds the right pointer, returning 0
-        if (l > r){
-            return 0;
+    // Recursive DFS method to compute minimum points
+    private int calculateDFS(int row, int col, int[][] points, int numRows, int numCols, int[][] memo) {
+        
+        // If reached the bottom-right corner of the grid
+        if (row == numRows - 1 && col == numCols - 1) {
+            // Return 1 if the current cell value is positive, otherwise return the absolute value plus 1
+            return points[row][col] > 0 ? 1 : Math.abs(points[row][col]) + 1;
         }
         
-        // If the value for the current range [l, r] is already computed, returning it
-        if (gp[l][r] != -1){
-            return gp[l][r];
-        } 
+        // If the result for the current cell is already computed, return it
+        if (memo[row][col] != Integer.MIN_VALUE) {
+            return memo[row][col];
+        }
         
-        // Calculating the maximum amount by choosing coins optimally
-        gp[l][r] = Math.max(a[l] + Math.min(helper(l + 2, r), helper(l + 1, r - 1)),
-                            a[r] + Math.min(helper(l, r - 2), helper(l + 1, r - 1)));
+        // Initialize minimum points required for the current cell to the maximum value
+        int minPoints = Integer.MAX_VALUE;
         
-        return gp[l][r];
+        // Try moving right if it's within the grid boundaries
+        if (col + 1 < numCols) {
+            // Calculate the points required for moving right and update the minimum points accordingly
+            int right = -points[row][col] + calculateDFS(row, col + 1, points, numRows, numCols, memo);
+            minPoints = Math.min(minPoints, right);
+        }
+        
+        // Try moving down if it's within the grid boundaries
+        if (row + 1 < numRows) {
+            // Calculate the points required for moving down and update the minimum points accordingly
+            int down = -points[row][col] + calculateDFS(row + 1, col, points, numRows, numCols, memo);
+            minPoints = Math.min(minPoints, down);
+        }
+        
+        // Store the computed minimum points for the current cell in the memoization array
+        memo[row][col] = minPoints <= 0 ? 1 : minPoints;
+        
+        // Return the minimum points required for the current cell
+        return memo[row][col];
     }
-
 }
 ```
