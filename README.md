@@ -2,21 +2,33 @@
 
 This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's problem of the day.
 
-## Today's 13-04-24
+## Today's 14-04-24
 
-## [Reverse Bits](https://www.geeksforgeeks.org/problems/reverse-bits3556/1)
+## [Xoring and Clearing](https://www.geeksforgeeks.org/problems/xoring-and-clearing/1)
 
 ## Intuition
-Given a number `x`, I aim to reverse its binary representation and return the result in decimal form.
+The problem requires performing three tasks on an array :
+- Calculate the bitwise XOR of each element in the array with its corresponding index.
+- Print the resulting array.
+- Set all elements of the array to zero.
+- Print the resulting array.
 
 ## Approach
 
-**Iterated over Bits** : 
-- I iterated over the 32 bits of `x`.
-- For each bit, right shift `x` to obtain the rightmost bit, then left shift the result by 1 and add the obtained bit.
+**Calculated XOR with Index :**
+- I iterated through the array.
+- For each element at index i, calculated the bitwise XOR of the element with i and updated the element in the array.
+- This can be done in a single pass through the array.
 
-**Result** : 
-- The result after iterating over all bits is the reversed binary representation of `x` in decimal form.
+**Print Array :**
+- Iterated through the array and print each element.
+
+**Set Elements to Zero :**
+- Iterated through the array.
+- Set each element to zero.
+
+**Print Array Again :**
+- Iterated through the array and print each element.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -24,9 +36,9 @@ Have a look at the code , still have any confusion then please let me know in th
 Keep Solving.:)
 
 ## Complexity
-- Time complexity : $O(log(x))$
+- Time complexity : $O(a)$
 <!-- Add your time complexity here, e.g. $$O())$$ -->
-$x$ : given
+$a$ : size of the array
 - Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
@@ -36,18 +48,27 @@ $x$ : given
 //  User function Template for Java
 
 class Solution {
-    static Long reversedBits(Long x) {
-        
-        long jawab = 0;
-        for (int i = 0; i < 32; i++) {
-            
-            // Get the rightmost bit of x and add it to jawab
-            jawab = (jawab << 1) | (x & 1);
-            
-            // Right shift x to get the next bit
-            x >>= 1;
+
+    // Function to print the array
+    public void printArr(int n, int arr[]) {
+        for (int i = 0; i < n; i++) {
+            System.out.print(arr[i] + " ");
         }
-        return jawab;
+        System.out.println();
     }
-};
+
+    // Function to set all elements of the array to zero
+    public void setToZero(int n, int arr[]) {
+        for (int i = 0; i < n; i++) {
+            arr[i] = 0; // Set each element to zero
+        }
+    }
+    
+    // Function to calculate the bitwise XOR of each element in the array with its corresponding index
+    public void xor1ToN(int n, int arr[]) {
+        for (int i = 0; i < n; i++) {
+            arr[i] ^= i; // XOR each element with its index
+        }
+    }
+}
 ```
